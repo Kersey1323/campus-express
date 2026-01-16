@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>校园快递</title>
+    <meta http-equiv="pragma" content="no-cache"/>
+    <meta http-equiv="content-type" content="no-cache, must-revalidate"/>
+    <meta http-equiv="expires" content="Wed, 26 Feb 1997 08:21:57 GMT"/>
+    <link rel="stylesheet" href="../../css/navi_container.css">
+<!--    <link rel="stylesheet" href="../../plugins/elementui/index.css">-->
+    <link rel="stylesheet" href="../../plugins/lib-master/theme-chalk/index.css">
+    <link rel="stylesheet" href="../../plugins/font-awesome/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body>
+
+
+<div id="app" style="">
+
+
+    <el-menu
+            :default-active="activeIndex2"
+            class="el-menu-demo"
+            mode="horizontal"
+            @select="handleSelect"
+            background-color="#545c64"
+            text-color="#fff"
+            active-text-color="#ffd04b">
+        <el-menu-item index="1"><a href="../user/index.html">首页</a></el-menu-item>
+        <el-menu-item index="2"><a href="http://localhost:8080/pages/order/manage-1.html">寄快递</a></el-menu-item>
+        <el-submenu index="3" :disabled="true">
+            <template slot="title">校园平台</template>
+            <el-menu-item index="3-1"><a href="#" style="color: white">平台中心</a></el-menu-item>
+            <el-menu-item index="3-2"><a href="#" style="color: white">注册平台</a></el-menu-item>
+            <el-menu-item index="3-3"><a href="#" style="color: white">平台管理</a></el-menu-item>
+        </el-submenu>
+        <el-menu-item index="4" v-if="!username"><a href="login.html">登录</a></el-menu-item>
+        <el-submenu index="4" v-if="username" >
+            <template slot="title">{{username}}</template>
+            <el-menu-item index="4-1" v-if="username"><a href="../order/manage-2.html" style="color: white"><i
+                    class="el-icon-goods"></i> 我的快递</a></el-menu-item>
+            <el-submenu index="4-2" v-if="username">
+                <template slot="title"><i class="el-icon-s-order"></i>订单派送</template>
+                <el-menu-item index="4-2-1"><a href="http://localhost:8080/pages/order/manage-3.html"
+                                               style="color: white"><i class="el-icon-s-home"></i> 派送中心</a>
+                </el-menu-item>
+                <el-menu-item index="4-2-2"><a href="http://localhost:8080/pages/order/manage-4.html"
+                                               style="color: white"><i class="el-icon-s-data"></i> 我的派送</a>
+                </el-menu-item>
+                </el-menu-item>
+
+            </el-submenu>
+            <el-menu-item index="4-3" v-if="username"><a href="info.html" style="color: white"><i
+                    class="el-icon-info"></i> 个人中心</a></el-menu-item>
+            <el-menu-item index="4-4" v-if="username"><a href="http://localhost:8080/pages/order/index.html"
+                                                         style="color: white"><i class="el-icon-circle-close"></i> 退出登录</a>
+            </el-menu-item>
+            </el-menu-item>
+
+        </el-submenu>
+
+
+    </el-menu>
+
+    <div style=" margin-left: 25%;margin-top: 5%;margin-bottom: 3%; width: 50%">
+        <div style="margin-top: 15px;">
+            <el-input placeholder="输入单号,50家国内快递为您只能查询" v-model="orderId" class="input-with-select">
+                <el-select v-model="select" slot="prepend" placeholder="请选择">
+                    <el-option label="智能查询" value="1"></el-option>
+                    <el-option label="用户电话" value="2"></el-option>
+                    <el-option label="申通" value="3"></el-option>
+                    <el-option label="圆通" value="4"></el-option>
+                    <el-option label="德邦" value="5"></el-option>
+                    <el-option label="顺丰" value="6"></el-option>
+                    <el-option label="邮政" value="7"></el-option>
+                    <el-option label="韵达" value="8"></el-option>
+                </el-select>
+                <el-button slot="append" icon="el-icon-search" @click="handleOrder()"></el-button>
+            </el-input>
+        </div>
+    </div>
+
+    <!--查询标签层-->
+    <div class="add-form">
+        <el-dialog title="订单信息" :visible.sync="dialogFormVisible4Order">
+
+            <div class="text item">
+                {{'订单号: ' + formData.orderId }}
+            </div>
+            <div class="text item">
+                {{'寄件人: ' + formData.sendName }}
+            </div>
+            <div class="text item">
+                {{'电话: ' + formData.sendTel }}
+            </div>
+
+            <div class="text item">
+                {{'收件人: ' + formData.recName }}
+            </div>
+
+            <div class="text item">
+                {{'收件人电话: ' + formData.recTel }}
+            </div>
+
+            <div class="text item">
+                {{'收件地址: ' + formData.recAddress }}
+            </div>
+
+            <div class="text item">
+                {{'下单时间: ' + formData.createTime }}
+            </div>
+
+            <div class="text item">
+                {{'备注: ' + formData.message }}
+            </div>
+
+
+            <div class="text item">
+                {{'价格: ' + formData.price +'元'}}
+            </div>
+
+            <div>
+                <a href="../order/manage-2.html" style="float: right;padding: 3px 0">查看详情</a>
+            </div>
+            <!--            <div slot="footer" class="dialog-footer">-->
+            <!--                <el-button @click="dialogFormVisible4 = false">取消</el-button>-->
+
+            <!--                <el-button type="primary" @click="delivery()">代取下单</el-button>-->
+            <!--            </div>-->
+        </el-dialog>
+    </div>
+</div>
+
+
+<div class="container">
+    <div class="card">
+        <figure class="card__thumb">
+            <img src="../../imgs/navi_container_imgs/12.jpg" alt="Picture by Kyle Cottrell" class="card__image">
+            <figcaption class="card__caption">
+                <h2 class="card__title">有什么不同？</h2>
+                <p class="card__snippet">
+                    “该平台是面向全国各大高校，大学生自己的快递平台。不断优化进步，励志于为每位学子提供最好的服务！”</p>
+<!--                <a href="../主页1/index.html" class="card__button">查看更多</a>-->
+            </figcaption>
+        </figure>
+    </div>
+
+    <div class="card">
+        <figure class="card__thumb">
+            <img src="../../imgs/navi_container_imgs/2.jpg" alt="Picture by Nathan Dumlao" class="card__image">
+            <figcaption class="card__caption">
+                <h2 class="card__title">加入我们</h2>
+                <p class="card__snippet">“注册校园快递平台或者成为我们的小帮手！”</p>
+<!--                <a href="../主页2/index.html" class="card__button">查看更多</a>-->
+            </figcaption>
+        </figure>
+    </div>
+
+    <div class="card">
+        <figure class="card__thumb">
+            <img src="../../imgs/navi_container_imgs/3.jpg" alt="Picture by Daniel Lincoln" class="card__image">
+            <figcaption class="card__caption">
+                <h2 class="card__title">福利多多
+                </h2>
+                <p class="card__snippet">
+                    通过下单或配送获取积分，超多小商品可通过积分兑换！</p>
+<!--                <a href="../主页3/index.html" class="card__button">查看更多</a>-->
+            </figcaption>
+        </figure>
+    </div>
+
+
+</div>
+
+
+</body>
+<script src="../../js/vue.js"></script>
+<script src="../../js/axios-0.18.0.js"></script>
+<!--<script src="../../plugins/elementui/index.js"></script>-->
+<script src="../../plugins/lib-master/index.js" charset="UTF-8"></script>
+<script type="text/javascript" src="../../js/jquery.min.js"></script>
+
+
+<script>
+
+
+    new Vue({
+
+        el: '#app',
+
+        data: {
+            username: '',
+            password: '',
+            university: '',
+            status: '0',
+            credit: '0',
+            orderSum: '0',
+            stars: '0',
+            id: '0',
+            role: '0',
+            activeIndex: '1',
+            activeIndex2: '1',
+            info: '登陆/注册',
+            orderId: '',
+            select: '',
+            dialogFormVisible4Order: false,
+            formData: {},
+        },
+
+        mounted() {
+
+            this.getUser();
+            console.log(this.username);
+
+        },
+        methods: {
+            handleSelect(key, keyPath) {
+                console.log(key, keyPath);
+            },
+
+
+            getUser() {
+
+                axios({
+                    url: "http://localhost:8080/util",
+                    method: "get",
+                    cache: false
+                }).then((res => {
+                    if (res.data.data) {
+                        console.log(res.data.data);
+                        this.username = res.data.data.username;
+                        this.status = res.data.data.status;
+                        this.id = res.data.data.id;
+                        this.role = res.data.data.role;
+                        this.password = res.data.data.password;
+                        this.university = res.data.data.university;
+                        this.credit = res.data.data.credit;
+                        this.orderSum = res.data.data.orderSum;
+                        this.stars = res.data.data.stars;
+                        sessionStorage.setItem("username", this.username);
+                        sessionStorage.setItem("status", this.status);
+                        sessionStorage.setItem("id", this.id);
+                        sessionStorage.setItem("role", this.role);
+                        sessionStorage.setItem("password", this.password);
+                        sessionStorage.setItem("university", this.university);
+                        sessionStorage.setItem("credit", this.credit);
+                        sessionStorage.setItem("orderSum", this.orderSum);
+                        sessionStorage.setItem("stars", this.stars);
+
+                    } else {
+                        this.username = '请登录！';
+                    }
+
+
+                }))
+
+            },
+
+            handleOrder() {
+
+
+                axios.get("/orders/" + this.orderId).then((res => {
+                    if (res.data.code == 20041) {
+                        this.formData = res.data.data;
+                        this.dialogFormVisible4Order = true;
+                        console.log(res.data.data);
+
+                    } else {
+
+                        this.$message.error("未查询到该订单号，请重试！")
+                    }
+
+                }))
+
+
+            },
+
+            searchOrder() {
+
+
+            },
+
+
+        }
+    });
+
+
+</script>
+
+<style>
+
+    #app > a {
+        color: white;
+    }
+</style>
+
+<style>
+    .text {
+        font-size: 14px;
+    }
+
+    .item {
+        margin-bottom: 18px;
+    }
+
+    .clearfix:before,
+    .clearfix:after {
+        display: table;
+        content: "";
+    }
+
+    .clearfix:after {
+        clear: both
+    }
+
+    .box-card {
+        width: 480px;
+    }
+
+</style>
+</html>

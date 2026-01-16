@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kersey.mapper.OrderMapper">
+
+<!--    返回映射集-->
+    <resultMap id="orderMap" type="com.kersey.pojo.Order">
+        <result column="id" property="orderId"></result>
+        <result column="userId" property="userId"></result>
+        <result column="company" property="company"></result>
+        <result column="sendAddress" property="sendAddress"></result>
+        <result column="recName" property="recName"></result>
+        <result column="recTel" property="recTel"></result>
+        <result column="recAddress" property="recAddress"></result>
+        <result column="remark" property="remark"></result>
+        <result column="status" property="status"></result>
+        <result column="hasDelete" property="hasDelete"></result>
+        <result column="deleteReason" property="deleteReason"></result>
+        <result column="createTime" property="createTime"></result>
+
+    </resultMap>
+
+<!--    添加订单-->
+    <insert id="add" >
+    insert into order_info(id,sendName,sendTel,sendAddress,price,kilo,sendDay,sendTime,message,type,company,recName,recTel,recAddress,remark,status) values
+    (#{orderId},#{sendName},#{sendTel},#{sendAddress},#{price},#{kilo},#{sendDay},#{sendTime},#{message},#{type},#{company},#{recName},#{recTel},#{recAddress},#{remark},#{status})
+
+    </insert>
+
+<!--    订单用户表添加-->
+    <insert id="addUserAndOrder">
+    insert into user_order  values (#{userId},#{orderId})
+
+    </insert>
+
+<!--批量删除-->
+    <delete id="deleteByIds">
+    delete from order_info where id in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+
+    </delete>
+
+<!--    订单用户表删除-->
+    <delete id="deleteUserAndOrder">
+        delete from user_order where orderId=#{orederId}
+
+    </delete>
+
+<!--批量删除用户订单表-->
+    <delete id="deleteUserAndOrderS">
+
+        delete from user_order where orderId in
+        <foreach collection="ids" item="orderId" separator="," open="(" close=")">
+            #{orderId}
+        </foreach>
+
+    </delete>
+
+
+
+    <!--    根据id查询-->
+    <select id="selectById" resultMap="orderMap">
+        SELECT * from order_info as OI LEFT JOIN user_order as OU on OI.id=OU.orderId where id=#{orderId};
+
+</select>
+
+<!--    分页查询-->
+    <select id="selectByPage" resultMap="orderMap">
+    select * from order_info limit #{begin},#{size}
+
+    </select>
+
+
+<!--修改-->
+    <update id="update">
+    update order_info set sendName=#{sendName},sendTel=#{sendTel},recName=#{recName},recTel=#{recTel} ,recAddress=#{recAddress},message=#{message},address2Receive=#{address2Receive}
+    where id=#{orderId}
+
+    </update>
+    <update id="pay">
+
+    update order_info set isPay=1 where id=#{orderId};
+
+
+    </update>
+    <update id="payByIds">
+        update order_info set isPay=1 where id in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+
+
+    </update>
+    <update id="orderDelivery">
+        update order_info set status=1 where id=#{orderId};
+    </update>
+    <update id="orderDeny">
+        update order_info set status=0 where id=#{orderId};
+    </update>
+
+    <!--    条件查询-->
+
+    <select id="selectByConditions" resultMap="orderMap">
+        select * from order_info
+        <where>
+            <if test="condition!=null">
+
+                    or id = #{condition}
+
+
+
+                    or sendTel like concat('%', #{condition})
+
+
+
+                    or recTel like concat('%', #{condition})
+
+
+
+                    or recName = #{condition}
+
+
+            </if>
+        </where>
+        limit #{begin},#{size}
+
+
+    </select>
+
+<!--    条件查询个数-->
+    <select id="selectCountOfCondition" resultType="java.lang.Integer">
+        select count(*) from order_info
+        <where>
+            <if test="condition!=null">
+
+                or id = #{condition}
+
+
+
+                or sendTel like concat('%', #{condition})
+
+
+
+                or recTel like concat('%', #{condition})
+
+
+
+                or recName = #{condition}
+
+
+            </if>
+        </where>
+
+    </select>
+</mapper>

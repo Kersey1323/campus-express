@@ -1,0 +1,7 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/shcool_express?serverTimezone=UTC
+    username: root
+    password: kerseytay13
+    type: com.alibaba.druid.pool.DruidDataSource

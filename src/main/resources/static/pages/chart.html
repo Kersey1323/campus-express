@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Chart Example</title>
+</head>
+<body>
+<div id="chart" style="width: 50%;height: 50%"></div>
+<script src="../js/apexcharts.min.js"></script>
+<script>
+    var chart = new ApexCharts(document.querySelector("#chart"), {
+        chart: {
+            type: 'donut'
+        },
+        series: [4, 2],
+        labels: ['A', 'B'],
+        responsive: [{
+            breakpoint: 480,
+            options: {
+                chart: {
+                    width: 200
+                },
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }]
+    });
+
+    chart.render();
+</script>
+</body>
+</html>

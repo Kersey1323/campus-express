@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kersey.mapper.ChartMapper">
+
+<!--    返回映射集-->
+    <resultMap id="orderMap" type="com.kersey.pojo.Order">
+
+
+    </resultMap>
+
+    <select id="getChartData" resultType="com.kersey.pojo.ChartData">
+
+
+        SELECT CD.label,SS.percentage
+         FROM chart_data AS CD
+                  LEFT JOIN (
+             SELECT id, ROUND(count / (SELECT count AS sum FROM star_static_1 WHERE id = 6) * 10, 0) AS percentage
+             FROM star_static_1
+             WHERE id IN (1, 2, 3, 4, 5)
+         ) AS SS ON CD.id = SS.id
+    </select>
+
+    <select id="getChartOrder" resultType="com.kersey.pojo.ChartData">
+        select month,count from chart_order;
+    </select>
+    <select id="getChartRole" resultType="com.kersey.pojo.RoleData">
+
+        sELECT COUNT(role) AS count FROM tb_user WHERE role = 1
+        UNION ALL
+        SELECT COUNT(role) AS count FROM tb_user WHERE role = 0
+    </select>
+
+
+</mapper>

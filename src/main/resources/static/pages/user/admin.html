@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="pragma" content="no-cache"/>
+    <meta http-equiv="content-type" content="no-cache, must-revalidate"/>
+    <meta http-equiv="expires" content="Wed, 26 Feb 1997 08:21:57 GMT"/>
+    <title>管理页面</title>
+<!--    <link rel="stylesheet" href="../../plugins/elementui/index.css">-->
+    <link rel="stylesheet" href="../../plugins/lib-master/theme-chalk/index.css">
+    <link rel="stylesheet" href="../../plugins/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body>
+<div id="app">
+    <div class="content-header">
+
+        <el-menu
+                :default-active="activeIndex2"
+                class="el-menu-demo"
+                mode="horizontal"
+                @select="handleSelect"
+                background-color="#545c64"
+                text-color="#fff"
+                active-text-color="#ffd04b">
+            <el-menu-item index="1"><a href="../user/index.html">首页</a></el-menu-item>
+            <el-menu-item index="2"><a href="http://localhost:8080/pages/order/manage-1.html">寄快递</a></el-menu-item>
+            <el-submenu index="3" :disabled="true">
+                <template slot="title">校园平台</template>
+                <el-menu-item index="3-1"><a href="#" style="color: white">平台中心</a></el-menu-item>
+                <el-menu-item index="3-2"><a href="#" style="color: white">注册平台</a></el-menu-item>
+                <el-menu-item index="3-3"><a href="#" style="color: white">平台管理</a></el-menu-item>
+            </el-submenu>
+            <el-menu-item index="4" v-if="!username"><a href="login.html">登录</a></el-menu-item>
+            <el-submenu index="4" v-if="username">
+                <template slot="title">{{username}}</template>
+                <el-menu-item index="4-1" v-if="username"><a href="../order/manage-2.html" style="color: white"><i
+                        class="el-icon-goods"></i> 我的快递</a></el-menu-item>
+                <el-menu-item index="4-2" v-if="username"><a href="http://localhost:8080/pages/order/manage-2.html"
+                                                             style="color: white"><i class="el-icon-edit-outline"></i> 快递管理</a>
+                </el-menu-item>
+                <el-menu-item index="4-3" v-if="username"><a href="info.html" style="color: white"><i
+                        class="el-icon-info"></i> 个人中心</a></el-menu-item>
+                <el-menu-item index="4-4" v-if="username"><a href="http://localhost:8080/pages/order/index.html"
+                                                             style="color: white"><i class="el-icon-circle-close"></i> 退出登录</a>
+                </el-menu-item>
+                </el-menu-item>
+
+            </el-submenu>
+
+
+        </el-menu>
+
+    </div>
+
+
+    <!--    导航栏-->
+<!--    <div style="margin-left: 90%">-->
+
+<!--        <el-row class="block-col-2">-->
+<!--            <el-col :span="12">-->
+<!--                <i class="el-icon-star-on" v-if="status=='1'"></i>-->
+<!--                <el-dropdown>-->
+
+<!--      <span class="el-dropdown-link">-->
+<!--        {{username}}<i class="el-icon-arrow-down el-icon&#45;&#45;right"></i>-->
+<!--      </span>-->
+<!--                    <el-dropdown-menu slot="dropdown">-->
+<!--                        <el-dropdown-item><i class="el-icon-info"></i><a href="../user/info.html"-->
+<!--                                                                         style="margin-left: 10px;margin-bottom: 5px">个人中心</a>-->
+<!--                        </el-dropdown-item>-->
+
+<!--                        <el-dropdown-item v-if="status=='1'"><i class="el-icon-edit-outline">-->
+<!--                        </i> <a href="admin.html" style="margin-left: 8px;">管理页面</a>-->
+<!--                        </el-dropdown-item>-->
+
+<!--                        <el-dropdown-item><i class="el-icon-circle-close"></i> <a href="../order/index.html"-->
+<!--                                                                                  style="margin-left: 8px;">退出登陆</a>-->
+<!--                        </el-dropdown-item>-->
+<!--                    </el-dropdown-menu>-->
+<!--                </el-dropdown>-->
+<!--            </el-col>-->
+<!--        </el-row>-->
+<!--    </div>-->
+
+    <div class="app-container">
+
+        <el-container style="height: 960px; ">
+<!--            <el-aside width="200px" style="background-color: white">-->
+
+<!--                <div style="background-color:rgb(255, 255, 255);margin-bottom: 0px" class="box"><i-->
+<!--                        class="el-icon-s-order"><span>  </span></i></div>-->
+<!--                <el-menu default-active="1-4-1" class="el-menu-vertical-demo">-->
+
+<!--                    <el-menu-item index="2">-->
+<!--                        <i class="el-icon-back"><a href="../user/index.html" style="color: rgb(144, 147, 153)">|</a></i>-->
+<!--                        <span slot="title">首页 </span>-->
+<!--                    </el-menu-item>-->
+
+
+<!--                    <el-menu-item index="4">-->
+<!--                        <i class="el-icon-info"><a href="../user/info.html" style="color: rgb(144, 147, 153)"> |</a></i>-->
+<!--                        <span slot="title">个人中心</span>-->
+<!--                    </el-menu-item>-->
+<!--                </el-menu>-->
+
+<!--            </el-aside>-->
+
+            <div class="box" >
+                <el-main style="background-color: white;width: 90%; margin-left: 5%;border-bottom:2px ">
+
+                    <template>
+                        <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
+                            <el-tab-pane label="用户管理" name="first">
+
+                                <div class="filter-container">
+                                    <el-input placeholder="用户名/学校" style="width: 200px;" class="filter-item"
+                                              v-model="searchData"></el-input>
+                                    <el-button class="dalfBut" @click="userSearch()">查询</el-button>
+                                </div>
+
+                                <el-table size="mini" current-row-key="id" :data="userDataList" stripe
+                                          highlight-current-row @selection-change="handleSelectionChange"
+                                          ref="multipleTable">
+
+                                    <el-table-column
+                                            type="selection"
+                                            width="55">
+                                    </el-table-column>
+                                    <el-table-column prop="id" align="center" label="ID"></el-table-column>
+                                    <el-table-column prop="username" label="用户名" align="center"></el-table-column>
+                                    <el-table-column prop="university" label="学校" align="center"></el-table-column>
+                                    <el-table-column prop="credit" label="积分" align="center"></el-table-column>
+                                    <el-table-column prop="role" label="配送员" align="center"
+                                                     :formatter="formatRole"></el-table-column>
+                                    <el-table-column prop="stars" label="评分" align="center"
+                                    >
+                                        <template slot-scope="scope">
+                                            <el-rate :value="scope.row.stars" :show-score="false"
+                                                     :disabled="true"></el-rate>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column prop="status" label="管理员" align="center"
+                                                     :formatter="formatStatus"></el-table-column>
+                                    <el-table-column prop="" label="操作" align="center">
+
+                                        <template slot-scope="scope">
+                                            <!--                                <el-button @click="handleUpdate(scope.row)" type="primary" size="mini"-->
+                                            <!--                                           v-if="status=='1'">编辑-->
+                                            <!--                                </el-button>-->
+                                            <el-button @click="handleUserUpdate(scope.row)" type="primary" size="mini">
+                                                编辑
+                                            </el-button>
+                                            <el-button @click="handleUserDelete(scope.row)" size="mini" type="danger">
+                                                禁用
+                                            </el-button>
+
+
+                                        </template>
+
+                                    </el-table-column>
+                                </el-table>
+
+                                <!--分页工具-->
+                                <el-pagination
+                                        class="userPagiantion"
+
+                                        @current-change="handleUserCurrentChange"
+                                        :page-sizes="[5,10,15,20]"
+                                        :current-page="userPagination.currentPage"
+                                        :page-size="userPagination.pageSize"
+                                        layout="total, prev, pager, next, jumper"
+                                        :total="userPagination.total">
+                                </el-pagination>
+
+
+                            </el-tab-pane>
+                            <el-tab-pane label="订单管理" name="second">
+
+                                <div class="filter-container">
+                                    <el-input placeholder="订单号/手机号/姓名" style="width: 200px;" class="filter-item"
+                                              v-model="searchData"></el-input>
+                                    <el-button class="dalfBut" @click="orderSearch()">查询</el-button>
+                                </div>
+
+                                <el-table size="mini" current-row-key="id" :data="orderDataList" stripe
+                                          highlight-current-row @selection-change="handleSelectionChange"
+                                          ref="multipleTable">
+
+                                    <el-table-column
+                                            type="selection"
+                                            width="55">
+                                    </el-table-column>
+                                    <el-table-column prop="orderId" align="center" label="订单号"></el-table-column>
+                                    <el-table-column prop="sendName" label="寄件人" align="center"></el-table-column>
+                                    <el-table-column prop="sendTel" label="电话" align="center"></el-table-column>
+                                    <el-table-column prop="recName" label="收件人" align="center"></el-table-column>
+                                    <el-table-column prop="recTel" label="收件人电话" align="center"></el-table-column>
+                                    <el-table-column prop="sendAddress" label="寄件地址" align="center"></el-table-column>
+                                    <el-table-column prop="recAddress" label="收件地址" align="center"></el-table-column>
+                                    <el-table-column prop="price" label="价格" align="center"></el-table-column>
+                                    <el-table-column prop="" label="操作" align="center">
+
+                                        <template slot-scope="scope">
+                                            <!--                                <el-button @click="handleUpdate(scope.row)" type="primary" size="mini"-->
+                                            <!--                                           v-if="status=='1'">编辑-->
+                                            <!--                                </el-button>-->
+                                            <el-button @click="handleOrderUpdate(scope.row)" type="primary" size="mini">
+                                                编辑
+                                            </el-button>
+                                            <el-button @click="handleOrderDelete(scope.row)" size="mini" type="danger">
+                                                删除
+                                            </el-button>
+
+                                        </template>
+
+                                    </el-table-column>
+                                </el-table>
+
+                                <!--分页工具-->
+                                <el-pagination
+                                        class="orderPagiantion"
+
+                                        @current-change="handleOrderCurrentChange"
+                                        :page-sizes="[5,10,15,20]"
+                                        :current-page="orderPagination.currentPage"
+                                        :page-size="orderPagination.pageSize"
+                                        layout="total, prev, pager, next, jumper"
+                                        :total="orderPagination.total">
+                                </el-pagination>
+
+
+                            </el-tab-pane>
+                            <el-tab-pane label="统计分析" name="third">
+                                <div>
+                                    <div id="chartContainer"
+                                         style="width: 40%;height: 40%;background-color: white;float: left;"></div>
+                                    <div id="chartOrder" style="width: 40%;height: 40%;background-color: white;float: left;margin-left: 30px" ></div>
+
+                                    <div id="chartDonut"
+                                         style="width: 30%;height: 30%;background-color: white;float: left;margin-top: 30px"></div>
+
+                                    <div id=""
+                                         style="width: 40%;height: 40%;background-color: white;float: left;"></div>
+                                </div>
+
+                            </el-tab-pane>
+                            <el-tab-pane label="问题反馈" name="fourth">问题反馈</el-tab-pane>
+                        </el-tabs>
+                    </template>
+
+
+                </el-main>
+
+            </div>
+
+
+        </el-container>
+
+        <!--用户编辑标签层-->
+        <div class="add-form">
+            <el-dialog title="用户信息" :visible.sync="dialogFormVisible4UserUpdate">
+                <el-form ref="dataAddForm" :model="formData" label-position="right"
+                         label-width="100px">
+                    <el-row>
+                        <el-col :span="12">
+                            <el-form-item label="ID" prop="id">
+                                <el-input v-model="formData.id" :disabled="true"/>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+                    <el-row>
+                        <el-col :span="12">
+                            <el-form-item label="用户名" prop="username">
+                                <el-input v-model="formData.username"/>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+                    <el-row>
+                        <el-col :span="12">
+                            <el-form-item label="学校" prop="university">
+                                <el-input v-model="formData.university"/>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+                    <el-row>
+                        <el-col :span="12">
+                            <el-form-item label="积分" prop="credit">
+                                <el-input v-model="formData.credit"/>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+                    <el-row>
+                        <el-col :span="12">
+                            <el-form-item label="配送员" prop="role">
+                                <el-input v-model="formData.role"/>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+
+                    <el-row>
+                        <el-col :span="12">
+                            <el-form-item label="评分" prop="stars">
+                                <el-input v-model="formData.stars"/>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+                    <el-row>
+                        <el-col :span="12">
+                            <el-form-item label="管理员" prop="status">
+                                <el-input v-model="formData.status"/>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+
+                </el-form>
+                <div slot="footer" class="dialog-footer">
+                    <el-button @click="dialogFormVisible4UserUpdate = false">取消</el-button>
+                    <el-button type="primary" @click="userUpdate()">确定</el-button>
+                </div>
+            </el-dialog>
+        </div>
+
+
+        <!-- 订单编辑标签弹层 -->
+        <div class="add-form">
+            <el-dialog title="编辑订单" :visible.sync="dialogFormVisible4OrderUpdate">
+                <el-form ref="dataAddForm" :model="formData" label-position="right"
+                         label-width="100px">
+                    <el-row>
+                        <el-col :span="12">
+                            <el-form-item label="订单号" prop="orderId">
+                                <el-input v-model="formData.orderId" :disabled="true"/>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+                    <el-row>
+                        <el-col :span="12">
+                            <el-form-item label="寄件人" prop="sendName">
+                                <el-input v-model="formData.sendName"/>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+                    <el-row>
+                        <el-col :span="12">
+                            <el-form-item label="电话" prop="sendTel">
+                                <el-input v-model="formData.sendTel"/>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+                    <el-row>
+                        <el-col :span="12">
+                            <el-form-item label="收件人" prop="recName">
+                                <el-input v-model="formData.recName"/>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+                    <el-row>
+                        <el-col :span="12">
+                            <el-form-item label="收件人电话" prop="recTel">
+                                <el-input v-model="formData.recTel"/>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+
+                    <el-row>
+                        <el-col :span="12">
+                            <el-form-item label="收件地址" prop="recAddress">
+                                <el-input v-model="formData.recAddress"/>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+                    <el-row>
+                        <el-col :span="12">
+                            <el-form-item label="下单时间" prop="createTime">
+                                <el-input v-model="formData.createTime" :disabled="true"/>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+
+                    <el-row>
+                        <el-col :span="24">
+                            <el-form-item label="备注" prop="message">
+                                <el-input v-model="formData.message" type="textarea"></el-input>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                </el-form>
+                <div slot="footer" class="dialog-footer">
+                    <el-button @click="dialogFormVisible4OrderUpdate = false">取消</el-button>
+                    <el-button type="primary" @click="orderUpdate()">确定</el-button>
+                </div>
+            </el-dialog>
+        </div>
+
+    </div>
+
+</div>
+
+
+</body>
+
+<!-- 引入组件库 -->
+<script src="../../js/vue.js"></script>
+<!--<script src="../../plugins/elementui/index.js"></script>-->
+<script src="../../plugins/lib-master/index.js" charset="UTF-8"></script>
+<script type="text/javascript" src="../../js/jquery.min.js"></script>
+<script src="../../js/axios-0.18.0.js"></script>
+
+
+<style>
+    .el-dropdown-link {
+        cursor: pointer;
+        color: #409EFF;
+    }
+</style>
+
+<script>
+    var vue = new Vue({
+
+        el: "#app",
+
+        data: {
+
+            activeName: 'third',
+
+            userDataList: [],
+            orderDataList: [],
+            username: '',
+            status: '0',
+            role: '0',
+            isPay: '0',
+            id: '0',
+            ids: [],
+            totalPrice: '',
+            value: '',//评分
+            orderId: '',
+            formData: {},//表单数据
+            searchData: '',//查询数据
+            dialogFormVisible4UserUpdate: false,
+            dialogFormVisible4OrderUpdate: false,
+
+            userPagination: {
+                //初始页面信息
+                total: 100,
+                currentPage: 1,
+                pageSize: 10
+            },
+
+            orderPagination: {
+                //初始页面信息
+                total: 100,
+                currentPage: 1,
+                pageSize: 10
+            },
+        },
+
+        mounted() {
+            this.selectByPage();
+            this.selectUserByPage();
+            this.getUser();
+
+        },
+
+
+        methods: {
+
+
+            formatRole(row) {
+                return row.role === 1 ? '是' : '否';
+            },
+
+            formatStatus(row) {
+                return row.status === 1 ? '是' : '否';
+            },
+
+            // formatStars(row) {
+            //     return row.stars;
+            // },
+
+            handleClick(tab, event) {
+                console.log(tab, event);
+            },
+
+            // 重置表单
+            resetForm() {
+                //清空输入框
+                this.formData = {};
+            },
+
+            getUser() {
+
+                axios({
+                    url: "http://localhost:8080/util",
+                    method: "get",
+                    cache: false
+                }).then((res => {
+                    if (res.data.data) {
+                        console.log(res.data.data);
+                        this.username = res.data.data.username;
+                        this.status = res.data.data.status;
+                        this.id = res.data.data.id;
+                        this.role = res.data.data.role;
+                        this.password = res.data.data.password;
+                        this.university = res.data.data.university;
+                        this.credit = res.data.data.credit;
+                        this.orderSum = res.data.data.orderSum;
+                        this.stars = res.data.data.stars;
+                        sessionStorage.setItem("username", this.username);
+                        sessionStorage.setItem("status", this.status);
+                        sessionStorage.setItem("id", this.id);
+                        sessionStorage.setItem("role", this.role);
+                        sessionStorage.setItem("password", this.password);
+                        sessionStorage.setItem("university", this.university);
+                        sessionStorage.setItem("credit", this.credit);
+                        sessionStorage.setItem("orderSum", this.orderSum);
+                        sessionStorage.setItem("stars", this.stars);
+
+                    } else {
+                        this.username = '请登录！';
+                    }
+
+
+                }))
+            },
+
+            //用户分页查询
+            selectUserByPage() {
+                axios.get("/users/admin/" + this.userPagination.currentPage + "/" + this.userPagination.pageSize).then(res => {
+                    this.userPagination.total = res.data.data.totalCount;
+                    this.userDataList = res.data.data.rows;
+
+                })
+            },
+
+
+            //分页查询(所有订单查询)
+            selectByPage() {
+
+                axios.get("/orders/" + this.orderPagination.currentPage + "/" + this.orderPagination.pageSize).then(res => {
+                    this.orderPagination.total = res.data.data.totalCount;
+                    this.orderDataList = res.data.data.rows;
+
+                })
+
+            },
+
+
+            //用户条件查询
+            userSearch() {
+                axios.get("/users/admin/" + this.userPagination.currentPage + "/" + this.userPagination.pageSize + "/" + this.searchData).then(res => {
+
+                    this.userDataList = res.data.data.rows;
+                    this.userPagination.total = res.data.data.totalCount;
+                });
+
+            },
+
+
+            //订单条件查询
+            orderSearch() {
+                axios.get("/orders/" + this.orderPagination.currentPage + "/" + this.orderPagination.pageSize + "/" + this.searchData)
+                    .then(res => {
+
+                        this.orderDataList = res.data.data.rows;
+                        this.orderPagination.total = res.data.data.totalCount;
+
+                    })
+
+            },
+
+            handleUserUpdate(row) {
+                this.dialogFormVisible4UserUpdate = true;
+                axios.get("/users/" + row.username).then(res => {
+                    if (res.data.code == 20041)
+                        this.formData = res.data.data;
+
+                })
+
+            },
+
+            handleOrderUpdate(row) {
+                this.dialogFormVisible4OrderUpdate = true;
+                axios.get("/orders/" + row.orderId).then(res => {
+                    if (res.data.code == 20041)
+                        this.formData = res.data.data;
+
+                })
+            },
+
+            userUpdate() {
+                this.$confirm("确认修改？", "提示", {
+                    type: 'info'
+                }).then(() => {
+                    //    删除业务
+                    axios.put("/users/", this.formData).then((res) => {
+                        if (res.data.code == 20031) {
+                            this.$message.success("修改成功");
+                            this.userPagination.currentPage = 1;
+
+                        }
+                        //    失败
+                        else {
+                            this.$message.error("修改失败！请重试。");
+                        }
+                    }).finally(() => {
+                        this.dialogFormVisible4UserUpdate = false;
+                        this.selectUserByPage();
+                    })
+
+                }).catch(() => {
+
+                    this.$message.info("取消");
+                })
+
+            },
+
+            orderUpdate() {
+                this.$confirm("确认修改？", "提示", {
+                    type: 'info'
+                }).then(() => {
+                    //    删除业务
+                    axios.put("/orders/", this.formData).then((res) => {
+                        if (res.data.code == 20031) {
+                            this.$message.success("修改成功");
+                            this.orderPagination.currentPage = 1;
+
+                        }
+                        //    失败
+                        else {
+                            this.$message.error("修改失败！请重试。");
+                        }
+                    }).finally(() => {
+                        this.dialogFormVisible4OrderUpdate = false;
+                        this.selectByPage();
+                    })
+
+                }).catch(() => {
+
+                    this.$message.info("取消");
+                })
+
+
+            },
+
+            handleUserDelete(row) {
+
+                this.$confirm("是否要禁用？", "提示", {
+                    type: 'info'
+                }).then(() => {
+                    //    删除业务
+
+                    this.$message.success("禁用成功");
+                    this.orderPagination.currentPage = 1;
+
+
+                }).finally(() => {
+
+                    this.selectUserByPage();
+                }).catch(() => {
+
+                    this.$message.info("取消禁用");
+                })
+
+
+            },
+
+            handleOrderDelete(row) {
+
+                this.$confirm("是否要删除？", "提示", {
+                    type: 'info'
+                }).then(() => {
+                    //    删除业务
+                    axios.delete("/orders/" + row.orderId).then((res) => {
+                        if (res.data.code == 20021) {
+                            this.$message.success("删除成功");
+                            this.orderPagination.currentPage = 1;
+
+                        }
+                        //    失败
+                        else {
+                            this.$message.error("删除失败,请重试");
+                        }
+                    }).finally(() => {
+
+                        this.selectByPage();
+                    })
+
+                }).catch(() => {
+
+                    this.$message.info("取消删除");
+                })
+
+
+            },
+
+
+            //用户当前页面设置
+            handleUserCurrentChange(val) {
+                this.userPagination.currentPage = val;
+                this.selectUserByPage();
+            },
+
+            //订单当前页面设置
+            handleOrderCurrentChange(val) {
+                this.orderPagination.currentPage = val;
+                this.selectByPage();
+            },
+
+            //多选
+            handleSelectionChange(val) {
+                this.multipleSelection = val;
+                console.log(this.multipleSelection);
+
+            }
+
+        }
+    })
+</script>
+
+<script src="../../js/apexcharts.min.js"></script>
+<script>
+    // 创建一个柱状图
+    axios.get("/chart").then(function (response) {
+        var chart = new ApexCharts(document.querySelector("#chartContainer"), {
+            chart: {
+                type: 'bar'
+            },
+            series: [{
+                data: response.data.map(function (chartData) {
+                    return chartData.value;
+                })
+            }],
+            xaxis: {
+                categories: response.data.map(function (chartData) {
+                    return chartData.label;
+                })
+            },
+
+            colors: ["#008FFB", "#00E396", "#FEB019", "#FF4560", "#775DD0"], // 指定颜色数组
+            plotOptions: {
+                bar: {
+                    horizontal: false, // 指定柱状图是否水平显示
+                    columnWidth: "55%", // 指定柱状图的宽度
+                    endingShape: "rounded", // 指定柱状图的形状
+                },
+            },
+            dataLabels: {
+                enabled: false, // 指定是否在图表上显示数据标签
+                style: {
+                    fontSize: "14px",
+                    colors: ["#fff"],
+                },
+            },
+            title: {
+                text: "用户评价", // 指定图表的标题
+                align: "center",
+                margin: 10,
+                offsetY: 10,
+                style: {
+                    fontSize: "25px",
+                },
+            },
+            subtitle: {
+                text: "Comments", // 指定图表的副标题
+                align: "center",
+                margin: 10,
+                offsetY: 40,
+                style: {
+                    fontSize: "20px",
+                },
+            },
+            tooltip: {
+                enabled: true, // 指定是否启用工具提示
+                shared: true,
+                intersect: false,
+                y: {
+                    formatter: function (val) {
+                        return val * 10 + "%"; // 指定工具提示的格式
+                    },
+                },
+            },
+            grid: {
+                borderColor: "#f1f1f1",
+                row: {
+                    colors: ["#f3f3f3", "transparent"],
+                    opacity: 0.5,
+                },
+            },
+            yaxis: {
+                title: {
+                    text: "百分比(%)", // 指定y轴的标题
+                },
+                min: 0,
+                max: 10, // 指定y轴的范围
+                labels: {
+                    formatter: function (val) {
+                        return val.toFixed(0);
+                    },
+                },
+            },
+
+
+        });
+        chart.render(); // 渲染图表
+    });
+
+
+</script>
+
+<script>
+
+    axios.get("/chart/order").then(function (response) {
+        console.log(response.data); // 打印出response.data
+        var chart = new ApexCharts(document.querySelector("#chartOrder"), {
+            chart: {
+                type: 'line'
+            },
+            series: [{
+                data: response.data.map(function (chartData) {
+
+                    return chartData.value;
+                })
+            }],
+            xaxis: {
+                categories: response.data.map(function (chartData) {
+                    return chartData.label;
+                })
+            },
+
+            dataLabels: {
+                enabled: false, // 指定是否在图表上显示数据标签
+                style: {
+                    fontSize: "14px",
+                    colors: ["#fff"],
+                },
+            },
+
+
+            plotOptions: {
+                line: {
+                    smooth: true
+                }
+            },
+
+            title: {
+                text: "年度订单", // 指定图表的标题
+                align: "center",
+                margin: 10,
+                offsetY: 10,
+                style: {
+                    fontSize: "25px",
+                },
+            },
+            subtitle: {
+                text: "Sale Of Year", // 指定图表的副标题
+                align: "center",
+                margin: 10,
+                offsetY: 40,
+                style: {
+                    fontSize: "20px",
+                },
+            },
+            tooltip: {
+                enabled: true, // 指定是否启用工具提示
+                shared: true,
+                intersect: false,
+                y: {
+                    formatter: function (val) {
+                        return val + "单"; // 指定工具提示的格式
+                    },
+                },
+            },
+            grid: {
+                borderColor: "#f1f1f1",
+                row: {
+                    colors: ["#f3f3f3", "transparent"],
+                    opacity: 0.5,
+                },
+            },
+            yaxis: {
+                title: {
+                    text: "单数", // 指定y轴的标题
+                },
+                min: 0,
+                max: 10000, // 指定y轴的范围
+                labels: {
+                    formatter: function (val) {
+                        return val.toFixed(0);
+                    },
+                },
+            },
+
+        });
+        chart.render(); // 渲染图表
+    })
+
+</script>
+
+<script>
+    axios.get("/chart/role").then(function (response) {
+        console.log(response.data);
+        var chart = new ApexCharts(document.querySelector("#chartDonut"), {
+            chart: {
+                type: 'donut'
+            },
+            series: [response.data[0].role,response.data[1].role],
+            labels: ['配送员', '普通用户'],
+            responsive: [{
+                breakpoint: 480,
+                options: {
+                    chart: {
+                        width: 200
+                    },
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }]
+        });
+        chart.render();
+    });
+
+
+
+
+</script>
+
+</html>

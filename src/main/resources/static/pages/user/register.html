@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>欢迎注册</title>
+    <meta http-equiv="pragma" content="no-cache"/>
+    <meta http-equiv="content-type" content="no-cache, must-revalidate"/>
+    <meta http-equiv="expires" content="Wed, 26 Feb 1997 08:21:57 GMT"/>
+
+    <link href="../../css/register.css" rel="stylesheet">
+<!--    <link rel="stylesheet" href="../../plugins/elementui/index.css">-->
+    <link rel="stylesheet" href="../../plugins/lib-master/theme-chalk/index.css">
+    <link rel="stylesheet" href="../../plugins/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body>
+
+
+<div class="form-div">
+
+    <div id="app">
+        <el-form label-width="100px" label-position="right" label-color="white" :model="registerForm">
+
+            <h1 align="center" style="color: whitesmoke">REGISTER</h1>
+            <br>
+            <span style="color: rgb(96, 98, 112)">已有帐号?<a href="login.html"
+                                                          style="color:rgb(102, 177, 255)">登陆</a></span>
+            <div align="right">
+                <span id="username_err" class="err_msg" style="display:none ; align-items: center ">用户名已存在</span>
+            </div>
+
+
+            <el-form-item label="用户名">
+                <el-input v-model="registerForm.username" prop="username" type="text-2"
+                          id="username"  size="small" class="my-input"></el-input>
+            </el-form-item>
+
+
+            <el-form-item label="密码">
+                <el-input v-model="registerForm.password" prop="password" type="password"
+                          size="small" show-password></el-input>
+            </el-form-item>
+
+
+            <el-form-item label="学校" >
+                <el-row>
+                    <el-col :span="12">
+                        <el-input v-model="registerForm.university" prop="university" type="text" size="small"
+                                  ></el-input>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item >
+                            <el-select v-model="registerForm.role" placeholder="请选择角色" size="small" >
+                                <el-option label="普通用户" value="0"></el-option>
+                                <el-option label="配送员" value="1"></el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+            </el-form-item>
+
+            <el-form-item label="验证码">
+
+                <el-row>
+                    <el-col :span="12">
+                        <el-input v-model="registerForm.checkCode" prop="checkCode" type="text" size="small"></el-input>
+                    </el-col>
+                    <el-col :span="12">
+                       <span style="font-size: small;margin-left:0px"><img id="checkCodeImg"
+                                                                             src="http://localhost:8080/users">
+                    <a href="#" id="changeImg">看不清?</a></span>
+                    </el-col>
+                </el-row>
+
+
+            </el-form-item>
+
+
+
+
+
+            <el-form-item style="margin-left: 15%">
+                <el-button type="primary" @click="rg()" size="small" >注册</el-button>
+                <el-button @click="resetForm" size="small">重置</el-button>
+            </el-form-item>
+
+
+        </el-form>
+
+    </div>
+</div>
+
+</body>
+
+<style>
+    .my-input .el-input__inner {
+        width: 200px;
+    }
+
+</style>
+<script src="../../js/vue.js"></script>
+<script src="../../js/axios-0.18.0.js"></script>
+<script src="../../plugins/lib-master/index.js" charset="UTF-8"></script>
+<!--<script src="../../plugins/elementui/index.js"></script>-->
+<script type="text/javascript" src="../../js/jquery.min.js"></script>
+
+<script>
+    var vue = new Vue({
+        el: '#app',
+
+        data: {
+
+            registerForm: {
+                username: "",
+                password: "",
+                university: "",
+                checkCode: "",
+                role: '',
+            },
+
+
+        },
+
+        methods: {
+
+            rg() {
+                var _this = this;
+                axios({
+                    method: "post",
+                    url: "http://localhost:8080/users/",
+                    data: _this.registerForm
+
+                }).then(function (response) {
+                    console.log(response.data.data);
+                    if (response.data.data) {
+                        _this.$message.success("注册成功！请登录。");
+                        location.href = "http://localhost:8080/pages/login.html";
+                    } else {
+                        _this.$message.error("验证码错误！请重新输入!");
+                        document.getElementById("checkCodeImg").src =
+                            "http://localhost:8080/users?" + new Date().getMilliseconds();
+                    }
+                })
+
+
+            },
+
+            resetForm() {
+
+                this.registerForm = {}
+            }
+
+
+        }
+    });
+
+
+    document.getElementById("username").onblur = function () {
+
+        var username = this.value;
+
+        axios({
+
+            method: "get",
+            url: "http://localhost:8080/users/" + username,
+
+        }).then(function (response) {
+
+            if (response.data.data) {
+                document.getElementById("username_err").style.display = '';
+            } else {
+                document.getElementById("username_err").style.display = 'none';
+            }
+
+        })
+    };
+
+
+    document.getElementById("changeImg").onclick = function () {
+
+        document.getElementById("checkCodeImg").src =
+            "http://localhost:8080/users?" + new Date().getMilliseconds();
+    }
+</script>
+
+
+</html>

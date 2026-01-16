@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="pragma" content="no-cache"/>
+    <meta http-equiv="content-type" content="no-cache, must-revalidate"/>
+    <meta http-equiv="expires" content="Wed, 26 Feb 1997 08:21:57 GMT"/>
+    <title>Title</title>
+    <!--    <link rel="stylesheet" href="../../plugins/elementui/index.css">-->
+    <link rel="stylesheet" href="../../plugins/lib-master/theme-chalk/index.css">
+    <link rel="stylesheet" href="../../plugins/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body>
+<div id="app">
+
+    <div class="content-header">
+        <el-menu
+                :default-active="activeIndex2"
+                class="el-menu-demo"
+                mode="horizontal"
+                @select="handleSelect"
+                background-color="#545c64"
+                text-color="#fff"
+                active-text-color="#ffd04b">
+
+            <el-menu-item index="1"><a href="../user/index.html">首页</a></el-menu-item>
+            <el-menu-item index="2"><a href="http://localhost:8080/pages/order/manage-1.html">寄快递</a></el-menu-item>
+            <el-submenu index="3" :disabled="true">
+                <template slot="title">校园平台</template>
+                <el-menu-item index="3-1"><a href="#" style="color: white">平台中心</a></el-menu-item>
+                <el-menu-item index="3-2"><a href="#" style="color: white">注册平台</a></el-menu-item>
+                <el-menu-item index="3-3"><a href="#" style="color: white">平台管理</a></el-menu-item>
+            </el-submenu>
+            <el-menu-item index="4" v-if="!username"><a href="login.html">登录</a></el-menu-item>
+            <el-submenu index="4" v-if="username">
+                <template slot="title">{{username}}</template>
+                <el-menu-item index="4-1" v-if="username"><a href="../order/manage-2.html" style="color: white"><i
+                        class="el-icon-goods"></i> 我的快递</a>
+                </el-menu-item>
+
+                <el-submenu index="4-2" v-if="username">
+                    <template slot="title"><i class="el-icon-s-order"></i> 订单派送</template>
+                    <el-menu-item index="4-2-1"><a href="http://localhost:8080/pages/order/manage-3.html"
+                                                   style="color: white"><i class="el-icon-s-home"></i> 派送中心</a>
+                    </el-menu-item>
+                    <el-menu-item index="4-2-2"><a href="http://localhost:8080/pages/order/manage-4.html"
+                                                   style="color: white"><i class="el-icon-s-data"></i> 我的派送</a>
+                    </el-menu-item>
+                    </el-menu-item>
+
+                </el-submenu>
+
+                <el-menu-item index="4-3" v-if="username"><a href="../user/info.html" style="color: white"><i
+                        class="el-icon-info"></i> 个人中心</a></el-menu-item>
+                <el-menu-item index="4-4" v-if="username"><a href="http://localhost:8080/pages/order/index.html"
+                                                             style="color: white"><i class="el-icon-circle-close"></i>
+                    退出登录</a>
+                </el-menu-item>
+                </el-menu-item>
+
+            </el-submenu>
+
+
+        </el-menu>
+    </div>
+
+    <!--    导航栏-->
+    <!--    <div style="margin-left: 90%">-->
+
+    <!--        <el-row class="block-col-2">-->
+    <!--            <el-col :span="12">-->
+    <!--                <i class="el-icon-star-on" v-if="status=='1'"></i>-->
+    <!--                <el-dropdown>-->
+
+    <!--      <span class="el-dropdown-link">-->
+    <!--        {{username}}<i class="el-icon-arrow-down el-icon&#45;&#45;right"></i>-->
+    <!--      </span>-->
+    <!--                    <el-dropdown-menu slot="dropdown">-->
+    <!--                        <el-dropdown-item><i class="el-icon-info"></i><a href="info.html"-->
+    <!--                                                                         style="margin-left: 10px;margin-bottom: 5px">个人中心</a>-->
+    <!--                        </el-dropdown-item>-->
+
+    <!--                        <el-dropdown-item v-if="status=='1'"><i class="el-icon-edit-outline">-->
+    <!--                        </i> <a href="admin.html" style="margin-left: 8px;">管理页面</a>-->
+    <!--                        </el-dropdown-item>-->
+
+    <!--                        <el-dropdown-item><i class="el-icon-circle-close"></i> <a href="../order/index.html"-->
+    <!--                                                                                  style="margin-left: 8px;">退出登陆</a>-->
+    <!--                        </el-dropdown-item>-->
+    <!--                    </el-dropdown-menu>-->
+    <!--                </el-dropdown>-->
+    <!--            </el-col>-->
+    <!--        </el-row>-->
+    <!--    </div>-->
+
+    <!--    主体-->
+    <div class="app-container">
+        <el-container style="height: 960px; border: 1px solid #eee;">
+
+            <!--            导航栏-->
+            <!--            <el-aside width="200px" style="background-color: rgb(238, 241, 246)">-->
+            <!--                <div style="background-color:rgb(255, 255, 255);margin-bottom: 0px" class="box"><i-->
+            <!--                        class="el-icon-s-order"><span>  </span></i></div>-->
+
+            <!--                <el-menu default-active="1-4-1" class="el-menu-vertical-demo"-->
+
+            <!--                >-->
+            <!--                    <el-submenu index="1">-->
+            <!--                        <template slot="title">-->
+            <!--                            <i class="el-icon-location"></i>-->
+            <!--                            <span slot="title">订单</span>-->
+            <!--                        </template>-->
+            <!--                        <el-menu-item-group>-->
+
+            <!--                            <el-menu-item index="1-1"><a href="../order/manage-2.html">查看订单</a></el-menu-item>-->
+            <!--                            <el-menu-item index="1-2"><a href="../order/manage-1.html">创建订单</a></el-menu-item>-->
+            <!--                        </el-menu-item-group>-->
+
+            <!--                        <el-submenu index="1-4" v-if="this.role=='1'" >-->
+            <!--                            <template slot="title">订单派送</template>-->
+            <!--                            <el-menu-item index="1-4-1"><a href="manage-3.html">派送中心</a></el-menu-item>-->
+            <!--                        </el-submenu>-->
+
+            <!--                        <el-submenu index="1-4" v-if="this.role=='0'" disabled>-->
+            <!--                            <template slot="title">订单派送</template>-->
+            <!--                            <el-menu-item index="1-4-1">派送中心</el-menu-item>-->
+            <!--                        </el-submenu>-->
+
+
+            <!--                    </el-submenu>-->
+            <!--                    <el-menu-item index="2">-->
+            <!--                        <i class="el-icon-back"><a href="../user/index.html" style="color: rgb(144, 147, 153)">|</a></i>-->
+            <!--                        <span slot="title">首页 </span>-->
+            <!--                    </el-menu-item>-->
+
+
+            <!--                    <el-menu-item index="4">-->
+            <!--                        <i class="el-icon-user-solid"><a href="info.html" style="color: rgb(144, 147, 153)"> |</a></i>-->
+            <!--                        <span slot="title">个人中心</span>-->
+            <!--                    </el-menu-item>-->
+            <!--                </el-menu>-->
+            <!--            </el-aside>-->
+            <div class="box">
+                <el-main style="">
+                    <el-row style="">
+
+                        <el-col :span="8">
+                            <el-card class="box-card">
+                                <div slot="header" class="clearfix">
+                                    <span>个人信息</span>
+                                    <el-button style="float: right; padding: 3px 0" type="text" @click="handleUpdate()">
+                                        修改
+                                    </el-button>
+                                </div>
+                                <div class="text item">
+                                    {{'名称: ' + username }}
+                                </div>
+                                <div class="text item">
+                                    {{'学校: ' + university }}
+                                </div>
+                                <div class="text item">
+                                    {{'积分: ' + credit }}
+                                </div>
+                                <div class="text item">
+                                    {{'配送员: ' + role }}
+                                    <el-button style="float: right" type="text" v-if="role=='否'" @click="beCurrier()">
+                                        注册成为配送员
+                                    </el-button>
+                                </div>
+
+
+                            </el-card>
+                        </el-col>
+
+
+                        <el-col :span="8" style="margin-left: - 75px">
+                            <el-card class="box-card">
+
+                                <div class="text item">
+                                    {{'派单数: ' + orderSum }}
+                                </div>
+
+
+                                <div class="text item">
+
+                                    <el-rate
+                                            v-model="value"
+                                            disabled
+                                            show-score
+                                            text-color="#ff9900"
+                                            score-template="{value}">
+                                    </el-rate>
+                                </div>
+
+                                <div class="text item">
+
+                                    <el-button style="float: right" type="text" @click="">
+                                        刷新
+                                    </el-button>
+                                </div>
+
+
+                            </el-card>
+                        </el-col>
+
+
+                    </el-row>
+
+                    <el-row style="">
+
+                        <el-col :span="8" style="margin-top: 20px">
+                            <el-card class="box-card">
+                                <el-row>
+
+
+                                    <div id="chartDonut"></div>
+
+
+                                </el-row>
+                            </el-card>
+                        </el-col>
+
+                        <el-col :span="8" style="margin-top: 20px;margin-left: -75px">
+                            <el-card class="box-card" style="width: 550px">
+
+                                <div id="chart"></div>
+
+
+                            </el-card>
+                        </el-col>
+                    </el-row>
+
+                </el-main>
+            </div>
+
+
+        </el-container>
+
+
+        <!-- 修改标签弹层 -->
+        <div class="add-form">
+            <el-dialog title="修改信息" :visible.sync="dialogFormVisible4Edit">
+                <el-form ref="dataAddForm" :model="formData" label-position="right"
+                         label-width="100px">
+                    <el-row>
+                        <el-col :span="12">
+                            <el-form-item label="用户名" prop="type">
+                                <el-input v-model="formData.username"/>
+                            </el-form-item>
+                        </el-col>
+
+                        <el-col :span="12">
+                            <el-form-item label="密码" prop="type">
+                                <el-input v-model="formData.password" show-password/>
+                            </el-form-item>
+                        </el-col>
+
+                        <el-col :span="12">
+                            <el-form-item label="学校" prop="name">
+                                <el-input v-model="formData.university"/>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+                    <el-row>
+                        <el-col :span="12">
+                            <el-form-item label="积分">
+                                <el-input v-model="formData.credit" :disabled="true"></el-input>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                </el-form>
+                <div slot="footer" class="dialog-footer">
+                    <el-button @click="dialogFormVisible4Edit = false">取消</el-button>
+                    <el-button type="primary" @click="update()">确定</el-button>
+                </div>
+            </el-dialog>
+        </div>
+
+
+    </div>
+</div>
+
+</body>
+<style>
+
+    .el-dropdown-link {
+        cursor: pointer;
+        color: #409EFF;
+    }
+
+    .text {
+        font-size: 14px;
+    }
+
+    .item {
+        margin-bottom: 18px;
+    }
+
+    .clearfix:before,
+    .clearfix:after {
+        display: table;
+        content: "";
+    }
+
+    .clearfix:after {
+        clear: both
+    }
+
+    .box-card {
+        width: 480px;
+    }
+
+</style>
+<!-- 引入组件库 -->
+<script src="../../js/vue.js"></script>
+<!--<script src="../../plugins/elementui/index.js"></script>-->
+<script src="../../plugins/lib-master/index.js" charset="UTF-8"></script>
+<script type="text/javascript" src="../../js/jquery.min.js"></script>
+<script src="../../js/axios-0.18.0.js"></script>
+<script src="../../js/apexcharts.min.js"></script>
+
+<script>
+
+
+    var vue = new Vue({
+
+        el: '#app',
+
+        data: {
+            username: '',
+            status: '0',
+            role: '否',
+            orderSum: '0',
+            stars: '3',
+            value: '3',
+            id: '0',
+            credit: '0',
+            university: '',
+
+            formData: {},//表单数据
+            dialogFormVisible4Edit: false,//编辑表单是否可见
+            dialogFormVisible4C: false,//编辑表单是否可见
+            isCollapse: true,
+        },
+
+        //钩子函数，VUE对象初始化完成后自动执行
+        mounted() {
+
+            this.getData();
+            this.getUser();
+
+            if (this.role == '1') {
+                this.role = '是'
+            } else {
+                this.role = '否'
+            }
+
+
+        },
+
+        methods: {
+            // 重置表单
+            resetForm() {
+                //清空输入框
+                this.formData = {};
+            },
+
+
+            getUser() {
+
+                this.username = sessionStorage.getItem("username");
+                this.password = sessionStorage.getItem("password");
+                this.status = sessionStorage.getItem("status");
+                this.id = sessionStorage.getItem("id");
+                this.role = sessionStorage.getItem("role");
+                this.credit = sessionStorage.getItem("credit");
+                this.university = sessionStorage.getItem("university");
+                this.orderSum = sessionStorage.getItem("orderSum");
+                this.value = sessionStorage.getItem("stars");
+            },
+
+            async getData() {
+                const [t, res] = await Promise.all([
+                    axios.get("/users/" + sessionStorage.getItem("username") + "/" + sessionStorage.getItem("password")),
+                    axios.get("/util/")
+                ]);
+
+                sessionStorage.setItem("username", res.data.data.username);
+                sessionStorage.setItem("role", res.data.data.role);
+                sessionStorage.setItem("password", res.data.data.password);
+                sessionStorage.setItem("university", res.data.data.university);
+                sessionStorage.setItem("credit", res.data.data.credit);
+                sessionStorage.setItem("orderSum", res.data.data.orderSum);
+                sessionStorage.setItem("stars", res.data.data.stars);
+
+
+            },
+
+
+            //获取编辑行的信息
+            handleUpdate() {
+                this.resetForm();
+                axios.get("/users/" + this.username).then((res) => {
+                    this.dialogFormVisible4Edit = true;
+                    this.formData = res.data.data;
+
+                })
+
+
+            },
+
+
+            //更新
+            update() {
+                axios.put("/users/", this.formData).then((res) => {
+                    //成功
+                    if (res.data.code == 20031) {
+                        this.dialogFormVisible4Edit = false;
+                        this.username = this.formData.username;
+                        this.password = this.formData.password;
+                        this.university = this.formData.university;
+                        sessionStorage.setItem("username", this.formData.username);
+                        sessionStorage.setItem("password", this.formData.password);
+                        sessionStorage.setItem("university", this.formData.university);
+                        this.$message.success("修改成功");
+
+                    }
+                    //    失败
+                    else if (res.data.code == 20030) {
+                        this.dialogFormVisible4Edit = false;
+                        this.$message.error("修改失败");
+                    }
+
+                }).finally(() => {
+                    this.dialogFormVisible4Edit = false;
+                    this.getData();
+                })
+
+            },
+
+            beCurrier() {
+                this.$prompt('请输入密码', '确认', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    inputType: 'password',
+
+                }).then(({value}) => {
+                    if (value == this.password) {
+
+                        axios.put('/users/' + this.id).then((res => {
+
+                            if (res.data.data) {
+                                this.$message({
+                                    type: 'success',
+                                    message: '注册成功！'
+                                });
+                            } else {
+                                this.$message({
+                                    type: 'error',
+                                    message: '密码错误，注册失败！'
+                                });
+                            }
+
+                        }))
+
+
+                    } else {
+
+                        this.$message({
+                            type: 'error',
+                            message: '密码错误，注册失败！'
+                        });
+                    }
+
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '取消注册'
+                    });
+                });
+            },
+
+
+        },
+
+    })
+</script>
+
+
+<script>
+    var chart = new ApexCharts(document.querySelector("#chartDonut"), {
+        chart: {
+            type: 'donut'
+        },
+        series: [1, 2, 3, 4, 5],
+        labels: ['1星', '2星', '3星', '4星', '5星'],
+        title: {
+            text: '星级分布'
+        },
+        responsive: [{
+            breakpoint: 480,
+            options: {
+                chart: {
+                    width: 200
+                },
+                legend: {
+                    position: 'bottom'
+                }
+            },
+
+
+        }]
+    });
+    chart.render();
+
+</script>
+
+<script>
+    var options = {
+        chart: {
+            type: 'radar'
+        },
+        series: [{
+            name: '我',
+            data: [80, 100, 99, 110, 110, 100],
+        }, {
+            name: '平均',
+            data: [60, 80, 60, 80, 90, 80],
+        },
+        ],
+        labels: ['配送速度', '评价', '单量', '积分', '注册时长', '活跃度'],
+        title: {
+            text: '能力对比'
+        },
+        stroke: {
+            width: 2
+        },
+        markers: {
+            size: 5,
+            hover: {
+                size: 10
+            }
+        },
+        yaxis: {
+            tickAmount: 5,
+            labels: {
+                formatter: function (val, i) {
+                    if (i % 2 === 0) {
+                        return val
+                    } else {
+                        return ''
+                    }
+                }
+            }
+        }
+    }
+
+    var chart = new ApexCharts(document.querySelector("#chart"), options);
+
+    chart.render();
+
+
+</script>
+
+</html>
+</html>

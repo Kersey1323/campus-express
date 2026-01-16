@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kersey.mapper.UserMapper">
+
+    <resultMap id="userMap" type="com.kersey.pojo.User">
+        <result column="username" property="username"></result>
+        <result column="role" property="role"></result>
+        <result column="stars" property="stars"></result>
+        <result column="status" property="status"></result>
+        <result column="credit" property="credit"></result>
+        <result column="university" property="university"></result>
+        <result column="password" property="password"></result>
+    </resultMap>
+
+    <insert id="insert">
+    INSERT into  tb_user (id,username,password,university,role) values (null,#{username},#{password},#{university},#{role})
+
+    </insert>
+
+
+    <update id="update">
+        update tb_user set username=#{username},password=#{password},university=#{university},credit=#{credit},stars=#{stars},role=#{role},
+                          status=#{status}
+                           where id=#{id};
+    </update>
+
+    <update id="beCurrier">
+
+    update tb_user set role=1 where id=#{id};
+    </update>
+    <update id="creditAdds">
+        update tb_user set credit=credit+100*#{length}  where id=#{id};
+
+    </update>
+    <update id="creditAdd">
+        update tb_user set credit=credit+100 where id=#{id};
+    </update>
+
+
+    <select id="selectByName"  resultMap="userMap">
+        select * from tb_user where username=#{username}
+    </select>
+
+    <select id="login" resultMap="userMap">
+        select * from tb_user where username=#{username} and password=#{password}
+    </select>
+    <select id="selectOrderByUser" resultType="com.kersey.pojo.Order">
+        SELECT * from order_info as OI LEFT JOIN user_order as OU on OI.id=OU.orderId where OU.userId=#{userId}
+        limit #{begin},#{size}
+    </select>
+    <select id="orderCount" resultType="java.lang.Integer">
+        select count(*) from order_info as OI LEFT JOIN user_order as OU on OI.id=OU.orderId where OU.userId=#{userId}
+
+    </select>
+
+    <select id="selectUserByPage"  resultMap="userMap">
+
+    select * from tb_user limit #{begin},#{size}
+
+    </select>
+
+    <select id="selectByConditions" resultMap="userMap">
+        select * from tb_user
+        <where>
+            <if test="condition!=null">
+
+                or username = #{condition}
+
+                or university = #{condition}
+
+
+            </if>
+        </where>
+        limit #{begin},#{size}
+
+
+    </select>
+
+    <select id="conditionCount" resultType="java.lang.Integer">
+        select count(*) from tb_user
+        <where>
+            <if test="condition!=null">
+
+                or username = #{condition}
+
+                or university = #{condition}
+
+
+            </if>
+        </where>
+
+    </select>
+
+
+</mapper>

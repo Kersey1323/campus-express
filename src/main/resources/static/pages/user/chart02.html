@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>支付宝支付</title>
+</head>
+<body>
+
+<div id="payment-form">
+
+</div>
+</body>
+
+<script src="../../js/apexcharts.min.js"></script>
+<script src="../../js/axios-0.18.0.js"></script>
+<script>
+
+    axios.get('/alipay')
+        .then(response => {
+            // 将返回的HTML表单字符串插入到前端页面中
+            document.getElementById('payment-form').innerHTML = response.data;
+        })
+        .catch(error => {
+            console.error(error);
+        });
+
+
+</script>
+
+
+</html>

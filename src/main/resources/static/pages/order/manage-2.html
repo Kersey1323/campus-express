@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="pragma" content="no-cache"/>
+    <meta http-equiv="content-type" content="no-cache, must-revalidate"/>
+    <meta http-equiv="expires" content="Wed, 26 Feb 1997 08:21:57 GMT"/>
+    <title>Title</title>
+<!--    <link rel="stylesheet" href="../../plugins/elementui/index.css">-->
+    <link rel="stylesheet" href="../../plugins/lib-master/theme-chalk/index.css">
+    <link rel="stylesheet" href="../../plugins/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body style="background-color: white">
+<div id="app">
+
+    <div class="content-header">
+
+        <el-menu
+                :default-active="activeIndex2"
+                class="el-menu-demo"
+                mode="horizontal"
+                @select="handleSelect"
+                background-color="#545c64"
+                text-color="#fff"
+                active-text-color="#ffd04b">
+          
+            <el-menu-item index="1"><a href="../user/index.html">首页</a></el-menu-item>
+            <el-menu-item index="2"><a href="http://localhost:8080/pages/order/manage-1.html">寄快递</a></el-menu-item>
+            <el-submenu index="3" :disabled="true">
+                <template slot="title">校园平台</template>
+                <el-menu-item index="3-1"><a href="#" style="color: white">平台中心</a></el-menu-item>
+                <el-menu-item index="3-2"><a href="#" style="color: white">注册平台</a></el-menu-item>
+                <el-menu-item index="3-3"><a href="#" style="color: white">平台管理</a></el-menu-item>
+            </el-submenu>
+            <el-menu-item index="4" v-if="!username" ><a href="login.html">登录</a></el-menu-item>
+            <el-submenu index="4" v-if="username" >
+                <template slot="title">{{username}}</template>
+                <el-menu-item index="4-1" v-if="username"><a href="../order/manage-2.html" style="color: white"><i
+                        class="el-icon-goods"></i> 我的快递</a>
+                </el-menu-item>
+
+                <el-submenu index="4-2" v-if="username" >
+                    <template slot="title"><i class="el-icon-s-order"></i> 订单派送</template>
+                    <el-menu-item index="4-2-1"><a href="http://localhost:8080/pages/order/manage-3.html"
+                                                   style="color: white"><i class="el-icon-s-home"></i> 派送中心</a></el-menu-item>
+                    <el-menu-item index="4-2-2"><a href="http://localhost:8080/pages/order/manage-4.html"
+                                                   style="color: white"><i class="el-icon-s-data"></i> 我的派送</a></el-menu-item></el-menu-item>
+
+                </el-submenu>
+
+                <el-menu-item index="4-3" v-if="username"><a href="../user/info.html" style="color: white"><i
+                        class="el-icon-info"></i> 个人中心</a></el-menu-item>
+                <el-menu-item index="4-4" v-if="username"><a href="http://localhost:8080/pages/order/index.html"
+                                                             style="color: white"><i class="el-icon-circle-close"></i> 退出登录</a>
+                </el-menu-item>
+                </el-menu-item>
+
+            </el-submenu>
+
+
+        </el-menu>
+    </div>
+
+    <!--    导航栏-->
+<!--    <div style="margin-left: 90%">-->
+
+<!--        <el-row class="block-col-2">-->
+<!--            <el-col :span="12">-->
+<!--                <i class="el-icon-star-on" v-if="status=='1'"></i>-->
+<!--                <el-dropdown>-->
+
+<!--      <span class="el-dropdown-link">-->
+<!--        {{username}}<i class="el-icon-arrow-down el-icon&#45;&#45;right"></i>-->
+<!--      </span>-->
+<!--                    <el-dropdown-menu slot="dropdown">-->
+<!--                        <el-dropdown-item><i class="el-icon-info"></i><a href="../user/info.html"-->
+<!--                                                                         style="margin-left: 10px;margin-bottom: 5px">个人中心</a>-->
+<!--                        </el-dropdown-item>-->
+
+<!--                        <el-dropdown-item v-if="status=='1'"><i class="el-icon-edit-outline">-->
+<!--                        </i> <a href="../user/admin.html" style="margin-left: 8px;">管理页面</a>-->
+<!--                        </el-dropdown-item>-->
+
+<!--                        <el-dropdown-item><i class="el-icon-circle-close"></i> <a href="index.html"-->
+<!--                                                                                  style="margin-left: 8px;">退出登陆</a>-->
+<!--                        </el-dropdown-item>-->
+
+
+<!--                    </el-dropdown-menu>-->
+<!--                </el-dropdown>-->
+<!--            </el-col>-->
+<!--        </el-row>-->
+<!--    </div>-->
+
+    <!--    主体-->
+    <div class="app-container">
+
+        <el-container style="height: 800px;">
+
+<!--            <el-aside width="200px" style="background-color: rgb(238, 241, 246)">-->
+
+<!--                <div style="background-color:rgb(255, 255, 255);margin-bottom: 0px" class="box"><i-->
+<!--                        class="el-icon-s-order"><span>  </span></i></div>-->
+<!--                <el-menu default-active="1-4-1" class="el-menu-vertical-demo"-->
+
+<!--                >-->
+<!--                    <el-submenu index="1">-->
+<!--                        <template slot="title">-->
+<!--                            <i class="el-icon-location"></i>-->
+<!--                            <span slot="title">订单</span>-->
+<!--                        </template>-->
+<!--                        <el-menu-item-group>-->
+
+<!--                            <el-menu-item index="1-1"><a href="manage-2.html">我的订单</a></el-menu-item>-->
+<!--                            <el-menu-item index="1-2"><a href="manage-1.html">创建订单</a></el-menu-item>-->
+
+
+<!--                            <el-submenu index="1-3" v-if="this.role=='1'">-->
+<!--                                <template slot="title">订单派送</template>-->
+<!--                                <el-menu-item index="1-3-1"><a href="manage-3.html">派送中心</a></el-menu-item>-->
+<!--                                <el-menu-item index="1-3-2"><a href="manage-4.html">已接订单</a></el-menu-item>-->
+<!--                            </el-submenu>-->
+
+<!--                            <el-submenu index="1-4" v-if="this.role=='0'" disabled>-->
+<!--                                <template slot="title">订单派送</template>-->
+<!--                                <el-menu-item index="1-4-1">派送中心</el-menu-item>-->
+<!--                                <el-menu-item index="1-4-2">已接订单</el-menu-item>-->
+<!--                            </el-submenu>-->
+
+
+<!--                        </el-menu-item-group>-->
+
+
+<!--                    </el-submenu>-->
+<!--                    <el-menu-item index="2">-->
+<!--                        <i class="el-icon-back"><a href="../user/index.html" style="color: rgb(144, 147, 153)">|</a></i>-->
+<!--                        <span slot="title">首页 </span>-->
+<!--                    </el-menu-item>-->
+
+
+<!--                    <el-menu-item index="4">-->
+<!--                        <i class="el-icon-info"><a href="../user/info.html" style="color: rgb(144, 147, 153)"> |</a></i>-->
+<!--                        <span slot="title">个人中心</span>-->
+<!--                    </el-menu-item>-->
+<!--                </el-menu>-->
+<!--            </el-aside>-->
+            <div class="box" style="border-top: 1px solid">
+
+
+                <el-main style="height: 95%;background-color: white">
+                    <h2>订单管理</h2>
+                    <div class="filter-container">
+                        <el-input placeholder="订单号/手机号/姓名" style="width: 200px;" class="filter-item"
+                                  v-model="searchData"></el-input>
+                        <el-button class="dalfBut" @click="search()">查询</el-button>
+                        <el-button type="primary" class="butT" @click="handleSelectionPay()" v-if="status=='0'">批量支付
+                        </el-button>
+                        <el-button type="danger" class="butT" @click="handleSelectionDelete()">批量删除</el-button>
+                        <span style="font-size: large;color: red;margin-left: 10px">合计:{{totalPrice}}元</span>
+                    </div>
+
+                    <!--                    所有订单-->
+                    <el-table size="mini" current-row-key="id" :data="dataList" v-if="status=='1'" stripe
+                              highlight-current-row @selection-change="handleSelectionChange" ref="multipleTable">
+
+                        <el-table-column
+                                type="selection"
+                                width="55">
+                        </el-table-column>
+                        <el-table-column prop="orderId" align="center" label="订单号"></el-table-column>
+                        <el-table-column prop="sendName" label="寄件人" align="center"></el-table-column>
+                        <el-table-column prop="sendTel" label="电话" align="center"></el-table-column>
+                        <el-table-column prop="recName" label="收件人" align="center"></el-table-column>
+                        <el-table-column prop="recTel" label="收件人电话" align="center"></el-table-column>
+                        <el-table-column prop="sendAddress" label="寄件地址" align="center"></el-table-column>
+                        <el-table-column prop="recAddress" label="收件地址" align="center"></el-table-column>
+                        <el-table-column prop="price" label="价格" align="center"></el-table-column>
+                        <el-table-column prop="" label="操作" align="center">
+
+                            <template slot-scope="scope">
+                                <!--                                <el-button @click="handleUpdate(scope.row)" type="primary" size="mini"-->
+                                <!--                                           v-if="status=='1'">编辑-->
+                                <!--                                </el-button>-->
+                                <el-button @click="handleUpdate(scope.row)" type="primary" size="mini">编辑</el-button>
+                                <el-button @click="handleDelete(scope.row)" size="mini" type="danger">删除</el-button>
+                            </template>
+
+                        </el-table-column>
+                    </el-table>
+
+
+                    <!--                    用户订单-->
+                    <el-table size="mini" current-row-key="id" :data="UserDataList" v-if="status=='0'" stripe
+                              highlight-current-row @selection-change="handleSelectionChange" ref="multipleTable">
+                        <el-table-column
+                                type="selection"
+                                width="55">
+                        </el-table-column>
+
+                        <el-table-column prop="orderId" align="center" label="订单号">
+                            <template slot-scope="scope">{{ scope.row.orderId }}</template>
+                        </el-table-column>
+
+                        <el-table-column prop="sendName" label="寄件人" align="center"></el-table-column>
+                        <el-table-column prop="sendTel" label="电话" align="center"></el-table-column>
+                        <el-table-column prop="recName" label="收件人" align="center"></el-table-column>
+                        <el-table-column prop="recTel" label="收件人电话" align="center"></el-table-column>
+                        <el-table-column prop="sendAddress" label="寄件地址" align="center"></el-table-column>
+                        <el-table-column prop="recAddress" label="收件地址" align="center"></el-table-column>
+                        <el-table-column prop="price" label="价格" align="center"></el-table-column>
+                        <el-table-column prop="" label="操作" align="center">
+
+                            <template slot-scope="scope">
+                                <!--                                <el-button @click="handleUpdate(scope.row)" type="primary" size="mini"-->
+                                <!--                                           v-if="status=='1'">编辑-->
+                                <!--                                </el-button>-->
+
+                                <el-button @click="handlePay(scope.row)" type="primary" size="mini"
+                                           v-if="scope.row.isPay==0">支付
+                                </el-button>
+                                <el-button @click="handleDelivery(scope.row)" type="primary" size="mini"
+                                           v-if="scope.row.isPay==1&&scope.row.status=='0'">代取
+                                </el-button>
+                                <el-button @click="handleDeny(scope.row)" type="primary" size="mini"
+                                           v-if="scope.row.status==1&&scope.row.isReceived==0">待接单
+                                </el-button>
+                                <el-button @click="" type="primary" size="mini"
+                                           v-if="scope.row.isFinish=='0'&&scope.row.isReceived==1" disabled>正在派送
+                                </el-button>
+                                <el-button @click="handleRemark(scope.row)" type="primary" size="mini"
+                                           v-if="scope.row.isFinish==1&&scope.row.isRemark==0">评价
+                                </el-button>
+                                <el-button @click="handleRemark(scope.row)" type="primary" size="mini"
+                                           v-if="scope.row.isFinish==1&&scope.row.isRemark==1" disabled>已完成
+                                </el-button>
+
+                                <el-button @click="handleDelete(scope.row)" size="mini" type="danger">删除</el-button>
+                            </template>
+
+                        </el-table-column>
+                    </el-table>
+
+
+                    <!--分页工具-->
+                    <el-pagination
+                            class="pagiantion"
+
+                            @current-change="handleCurrentChange"
+                            :page-sizes="[5,10,15,20]"
+                            :current-page="pagination.currentPage"
+                            :page-size="pagination.pageSize"
+                            layout="total, prev, pager, next, jumper"
+                            :total="pagination.total">
+                    </el-pagination>
+                </el-main>
+            </div>
+
+        </el-container>
+
+
+        <!-- 新增标签弹层 -->
+        <div class="add-form">
+            <el-dialog title="新增图书" :visible.sync="dialogFormVisible">
+                <el-form ref="dataAddForm" :model="formData" label-position="right"
+                         label-width="100px">
+                    <el-row>
+                        <el-col :span="12">
+                            <el-form-item label="图书类别" prop="type">
+                                <el-input v-model="formData.type"/>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="12">
+                            <el-form-item label="图书名称" prop="name">
+                                <el-input v-model="formData.name"/>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                    <el-row>
+                        <el-col :span="24">
+                            <el-form-item label="描述">
+                                <el-input v-model="formData.description" type="textarea"></el-input>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                </el-form>
+                <div slot="footer" class="dialog-footer">
+                    <el-button @click="dialogFormVisible = false">取消</el-button>
+                    <el-button type="primary" @click="saveBook()">确定</el-button>
+                </div>
+            </el-dialog>
+        </div>
+
+
+        <!-- 编辑标签弹层 -->
+        <div class="add-form">
+            <el-dialog title="编辑订单" :visible.sync="dialogFormVisible4Edit">
+                <el-form ref="dataAddForm" :model="formData" label-position="right"
+                         label-width="100px">
+                    <el-row>
+                        <el-col :span="12">
+                            <el-form-item label="订单号" prop="orderId">
+                                <el-input v-model="formData.orderId" :disabled="true"/>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+                    <el-row>
+                        <el-col :span="12">
+                            <el-form-item label="寄件人" prop="sendName">
+                                <el-input v-model="formData.sendName"/>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+                    <el-row>
+                        <el-col :span="12">
+                            <el-form-item label="电话" prop="sendTel">
+                                <el-input v-model="formData.sendTel"/>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+                    <el-row>
+                        <el-col :span="12">
+                            <el-form-item label="收件人" prop="recName">
+                                <el-input v-model="formData.recName"/>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+                    <el-row>
+                        <el-col :span="12">
+                            <el-form-item label="收件人电话" prop="recTel">
+                                <el-input v-model="formData.recTel"/>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+
+                    <el-row>
+                        <el-col :span="12">
+                            <el-form-item label="收件地址" prop="recAddress">
+                                <el-input v-model="formData.recAddress"/>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+                    <el-row>
+                        <el-col :span="12">
+                            <el-form-item label="下单时间" prop="createTime">
+                                <el-input v-model="formData.createTime" :disabled="true"/>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+
+                    <el-row>
+                        <el-col :span="24">
+                            <el-form-item label="备注" prop="message">
+                                <el-input v-model="formData.message" type="textarea"></el-input>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                </el-form>
+                <div slot="footer" class="dialog-footer">
+                    <el-button @click="dialogFormVisible4Edit = false">取消</el-button>
+                    <el-button type="primary" @click="upDate()">确定</el-button>
+                </div>
+            </el-dialog>
+        </div>
+
+        <!-- 支付标签弹层 -->
+        <div class="add-form">
+            <el-dialog title="订单信息" :visible.sync="dialogFormVisible4Pay">
+                <el-form ref="dataAddForm" :model="formData" label-position="right"
+                         label-width="100px">
+                    <el-row>
+                        <el-col :span="12">
+                            <el-form-item label="订单号" prop="orderId">
+                                <el-input v-model="formData.orderId" :disabled="true"/>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+                    <el-row>
+                        <el-col :span="12">
+                            <el-form-item label="寄件人" prop="sendName">
+                                <el-input v-model="formData.sendName"/>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+                    <el-row>
+                        <el-col :span="12">
+                            <el-form-item label="电话" prop="sendTel">
+                                <el-input v-model="formData.sendTel"/>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+                    <el-row>
+                        <el-col :span="12">
+                            <el-form-item label="收件人" prop="recName">
+                                <el-input v-model="formData.recName"/>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+                    <el-row>
+                        <el-col :span="12">
+                            <el-form-item label="收件人电话" prop="recTel">
+                                <el-input v-model="formData.recTel"/>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+
+                    <el-row>
+                        <el-col :span="12">
+                            <el-form-item label="收件地址" prop="recAddress">
+                                <el-input v-model="formData.recAddress"/>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+                    <el-row>
+                        <el-col :span="12">
+                            <el-form-item label="下单时间" prop="createTime">
+                                <el-input v-model="formData.createTime" :disabled="true"/>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+
+                    <el-row>
+                        <el-col :span="24">
+                            <el-form-item label="备注" prop="message">
+                                <el-input v-model="formData.message" type="textarea"></el-input>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+                    <el-row v-if="formData.isPay=='1'">
+                        <el-col :span="24">
+                            <el-form-item label="订单状态" prop="isPay">
+                                <el-input value="已支付" :disabled="true"></el-input>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+                    <el-row v-if="formData.isPay=='0'">
+                        <el-col :span="24">
+                            <el-form-item label="订单状态" prop="isPay">
+                                <el-input value="未支付" :disabled="true"></el-input>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                    <p></p>
+                    <span>价格：{{formData.price}}</span>
+                </el-form>
+                <div slot="footer" class="dialog-footer">
+                    <el-button @click="dialogFormVisible4Pay = false">取消</el-button>
+                    <el-button type="warning" @click="upDate()">修改</el-button>
+                    <el-button type="primary" @click="pay()">支付</el-button>
+                </div>
+            </el-dialog>
+        </div>
+
+        <!-- 代取标签弹层 -->
+        <div class="add-form">
+            <el-dialog title="订单信息" :visible.sync="dialogFormVisible4Del">
+                <el-form ref="dataAddForm" :model="formData" label-position="right"
+                         label-width="100px">
+                    <el-row>
+                        <el-col :span="12">
+                            <el-form-item label="订单号" prop="orderId">
+                                <el-input v-model="formData.orderId" :disabled="true"/>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+                    <el-row>
+                        <el-col :span="12">
+                            <el-form-item label="寄件人" prop="sendName">
+                                <el-input v-model="formData.sendName" :disabled="true"/>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+                    <el-row>
+                        <el-col :span="12">
+                            <el-form-item label="电话" prop="sendTel">
+                                <el-input v-model="formData.sendTel" :disabled="true"/>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+                    <el-row>
+                        <el-col :span="12">
+                            <el-form-item label="收件人" prop="recName">
+                                <el-input v-model="formData.recName" :disabled="true"/>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+                    <el-row>
+                        <el-col :span="12">
+                            <el-form-item label="收件人电话" prop="recTel">
+                                <el-input v-model="formData.recTel" :disabled="true"/>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+
+                    <el-row>
+                        <el-col :span="12">
+                            <el-form-item label="收件地址" prop="recAddress">
+                                <el-input v-model="formData.recAddress" :disabled="true"/>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+                    <el-row>
+                        <el-col :span="12">
+                            <el-form-item label="下单时间" prop="createTime">
+                                <el-input v-model="formData.createTime" :disabled="true"/>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+
+                    <el-row>
+                        <el-col :span="24">
+                            <el-form-item label="备注" prop="message">
+                                <el-input v-model="formData.message" type="textarea" :disabled="true"></el-input>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+                    <el-row v-if="formData.isPay=='1'">
+                        <el-col :span="24">
+                            <el-form-item label="订单状态" prop="isPay">
+                                <el-input value="已支付" :disabled="true"></el-input>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+                    <el-row v-if="formData.isPay=='0'">
+                        <el-col :span="24">
+                            <el-form-item label="订单状态" prop="isPay">
+                                <el-input value="未支付" :disabled="true"></el-input>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+                    <el-row >
+                        <el-col :span="12">
+                            <el-form-item label="派送地址" >
+                                <el-input v-model="formData.address2Receive" ></el-input>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+                    <p></p>
+                    <span>价格：{{formData.price}}</span>
+                </el-form>
+                <div slot="footer" class="dialog-footer">
+                    <el-button @click="dialogFormVisible4Del = false">取消</el-button>
+
+                    <el-button type="primary" @click="delivery()">代取下单</el-button>
+                </div>
+            </el-dialog>
+        </div>
+
+        <!--代取订单取消标签弹层-->
+        <div class="add-form">
+            <el-dialog title="订单信息" :visible.sync="dialogFormVisible4Deny">
+                <el-form ref="dataAddForm" :model="formData" label-position="right"
+                         label-width="100px">
+                    <el-row>
+                        <el-col :span="12">
+                            <el-form-item label="订单号" prop="orderId">
+                                <el-input v-model="formData.orderId" :disabled="true"/>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+                    <el-row>
+                        <el-col :span="12">
+                            <el-form-item label="寄件人" prop="sendName">
+                                <el-input v-model="formData.sendName" :disabled="true"/>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+                    <el-row>
+                        <el-col :span="12">
+                            <el-form-item label="电话" prop="sendTel">
+                                <el-input v-model="formData.sendTel" :disabled="true"/>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+                    <el-row>
+                        <el-col :span="12">
+                            <el-form-item label="收件人" prop="recName">
+                                <el-input v-model="formData.recName" :disabled="true"/>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+                    <el-row>
+                        <el-col :span="12">
+                            <el-form-item label="收件人电话" prop="recTel">
+                                <el-input v-model="formData.recTel" :disabled="true"/>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+
+                    <el-row>
+                        <el-col :span="12">
+                            <el-form-item label="收件地址" prop="recAddress">
+                                <el-input v-model="formData.recAddress" :disabled="true"/>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+                    <el-row>
+                        <el-col :span="12">
+                            <el-form-item label="下单时间" prop="createTime">
+                                <el-input v-model="formData.createTime" :disabled="true"/>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+
+                    <el-row>
+                        <el-col :span="24">
+                            <el-form-item label="备注" prop="message">
+                                <el-input v-model="formData.message" type="textarea" :disabled="true"></el-input>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+                    <el-row v-if="formData.isPay=='1'">
+                        <el-col :span="24">
+                            <el-form-item label="订单状态" prop="isPay">
+                                <el-input value="已支付" :disabled="true"></el-input>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+                    <el-row v-if="formData.isPay=='0'">
+                        <el-col :span="24">
+                            <el-form-item label="订单状态" prop="isPay">
+                                <el-input value="未支付" :disabled="true"></el-input>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+
+                    <el-row >
+                        <el-col :span="12">
+                            <el-form-item label="派送地址" >
+                                <el-input v-model="formData.address2Receive" :disabled="true"></el-input>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                    <p></p>
+                    <span>价格：{{formData.price}}元</span>
+                </el-form>
+                <div slot="footer" class="dialog-footer">
+                    <el-button @click="dialogFormVisible4Deny = false">取消</el-button>
+
+                    <el-button type="danger" @click="deny()">取消订单</el-button>
+                </div>
+            </el-dialog>
+        </div>
+
+
+        <!--评价标签弹层-->
+        <div class="add-form">
+            <el-dialog title="配送员评分" :visible.sync="dialogFormVisible4Rate">
+                <el-form ref="dataAddForm" :model="value" label-position="right"
+                         label-width="100px">
+                    <el-rate v-model="value"></el-rate>
+                </el-form>
+                <div slot="footer" class="dialog-footer">
+                    <el-button @click="dialogFormVisible4Rate = false">取消</el-button>
+
+                    <el-button type="danger" @click="remark()">提交</el-button>
+                </div>
+            </el-dialog>
+        </div>
+
+    </div>
+</div>
+
+</body>
+<style>
+
+    .el-dropdown-link {
+        cursor: pointer;
+        color: #409EFF;
+    }
+
+    .el-icon-arrow-down {
+        font-size: 12px;
+    }
+
+    .demonstration {
+        display: block;
+        color: #8492a6;
+        font-size: 14px;
+        margin-bottom: 20px;
+    }
+
+</style>
+<!-- 引入组件库 -->
+<script src="../../js/vue.js"></script>
+<!--<script src="../../plugins/elementui/index.js"></script>-->
+<script src="../../plugins/lib-master/index.js" charset="UTF-8"></script>
+<script type="text/javascript" src="../../js/jquery.min.js"></script>
+<script src="../../js/axios-0.18.0.js"></script>
+
+<script>
+    var vue = new Vue({
+
+        el: '#app',
+
+        data: {
+            username: '',
+            status: '0',
+            role: '0',
+            isPay: '0',
+            id: '0',
+            ids: [],
+            totalPrice: '',
+            value: '',//评分
+            orderId: '',
+            dataList: [],//当前页要展示的分页列表数据
+            UserDataList: [],//用户订单信息
+            formData: {},//表单数据
+            searchData: '',//查询数据
+            dialogFormVisible: false,//增加表单是否可见
+            dialogFormVisible4Edit: false,//编辑表单是否可见
+            dialogFormVisible4Pay: false,//支付表单是否可见
+            dialogFormVisible4Del: false,//派送表单是否可见
+            dialogFormVisible4Deny: false,//取消派送表单是否可见
+            dialogFormVisible4Rate: false,//评价表单是否可见
+            pagination: {
+                //初始页面信息
+                total: 100,
+                currentPage: 1,
+                pageSize: 10
+            },
+            multipleSelection: [],//多选框
+
+            isCollapse: true,
+        },
+
+        //钩子函数，VUE对象初始化完成后自动执行
+        mounted() {
+
+            this.getUser();
+
+            if (this.status == '1') {
+                this.selectByPage();
+            } else {
+                this.getUserOrder();
+            }
+
+
+        },
+
+        methods: {
+            // 重置表单
+            resetForm() {
+                //清空输入框
+                this.formData = {};
+            },
+
+            //分页查询(所有订单查询)
+            selectByPage() {
+
+                axios.get("/orders/" + this.pagination.currentPage + "/" + this.pagination.pageSize).then(res => {
+                    this.pagination.total = res.data.data.totalCount;
+                    this.dataList = res.data.data.rows;
+
+                })
+
+            },
+
+            //条件查询
+            search() {
+                axios.get("/orders/" + this.pagination.currentPage + "/" + this.pagination.pageSize + "/" + this.searchData)
+                    .then(res => {
+                        if (this.status == '1')
+                            this.dataList = res.data.data.rows;
+                        else
+                            this.UserDataList = res.data.data.rows;
+                        this.pagination.total = res.data.data.totalCount;
+
+                    })
+
+            },
+
+            getUser() {
+
+                this.username = sessionStorage.getItem("username");
+                this.status = sessionStorage.getItem("status");
+                this.id = sessionStorage.getItem("id");
+                this.role = sessionStorage.getItem("role");
+            },
+
+            //用户订单查询
+            getUserOrder() {
+                axios.get("http://localhost:8080/users" + "/" + this.pagination.currentPage + "/" + this.pagination.pageSize + "/" + sessionStorage.getItem("id")).then(res => {
+                    this.UserDataList = res.data.data.rows;
+                    this.pagination.total = res.data.data.totalCount;
+
+
+                })
+            },
+
+
+            //获取编辑行的信息
+            handleUpdate(row) {
+                this.resetForm();
+                axios.get("/orders/" + row.orderId).then((res) => {
+                    this.dialogFormVisible4Edit = true;
+                    this.formData = res.data.data;
+
+                })
+
+
+            },
+
+
+            //更新
+            upDate() {
+                axios.put("/orders", this.formData).then((res) => {
+                    //成功
+                    if (res.data.code == 20031) {
+                        this.dialogFormVisible4Edit = false;
+                        this.$message.success("修改成功");
+
+                    }
+                    //    失败
+                    else if (res.data.code == 20030) {
+                        this.dialogFormVisible4Edit = false;
+                        this.$message.error("修改失败");
+                    }
+
+                }).finally(() => {
+                    this.dialogFormVisible4Edit = false;
+                    this.selectByPage();
+                })
+
+            },
+
+            //获取编辑行的信息
+            handleDeny(row) {
+                this.resetForm();
+                axios.get("/orders/" + row.orderId).then((res) => {
+                    this.dialogFormVisible4Deny = true;
+                    this.formData = res.data.data;
+
+                })
+
+            },
+
+            deny() {
+                this.$confirm("是否取消订单？", "提示", {
+                    type: 'info'
+                }).then(() => {
+                    //    删除业务
+                    axios.put("/orders/deny/" + this.formData.orderId).then((res) => {
+                        if (res.data.code == 20031) {
+                            this.$message.success("取消成功");
+                            this.pagination.currentPage = 1;
+
+                        }
+                        //    失败
+                        else {
+                            this.$message.error("取消失败,请联系管理员。");
+                        }
+                    }).finally(() => {
+                        this.dialogFormVisible4Deny=false;
+                        if (this.status == '1')
+                            this.selectByPage();
+                        else this.getUserOrder();
+                    })
+
+                }).catch(() => {
+
+                    this.$message.info("取消");
+                })
+
+            },
+
+
+            //获取支付的信息
+            handlePay(row) {
+                this.resetForm();
+                axios.get("/orders/" + row.orderId).then((res) => {
+                    this.dialogFormVisible4Pay = true;
+                    this.formData = res.data.data;
+
+                })
+
+
+            },
+
+
+            //支付+积分增加
+            async pay() {
+                try {
+                    await this.$confirm("确定支付？", "提示", {
+                        type: 'info'
+                    });
+
+                    const res = await axios.put("/orders/pay/" + this.formData.orderId);
+                    const resPay =await axios.post("/alipay/pay",this.formData);
+
+                    window.open('about:blank', '_self').document.write(resPay.data);
+                    if (res.data.code == 20031) {
+                        const r = await axios.put("/users/pay/" + this.id);
+
+                        if (r.data.code == 20031) {
+
+
+                        }
+                    } else {
+                        this.$message.error("支付失败");
+                    }
+                    this.dialogFormVisible4Pay = false;
+                    this.pagination.currentPage = 1;
+
+                    if (this.status == '1') {
+                        this.selectByPage();
+                    } else {
+                        this.getUserOrder();
+                    }
+                } catch (error) {
+                    console.log(error);
+                    this.$message.info("取消支付");
+                }
+
+
+            },
+
+            //批量支付
+            async handleSelectionPay() {
+                const selectedRows = this.$refs.multipleTable.selection;
+                const idsToPay = selectedRows.map(row => row.orderId);
+                console.log(idsToPay);
+
+                try {
+                    await this.$confirm("确定支付？", "提示", {
+                        type: 'info'
+                    });
+
+                    const res = await axios.put("/orders/pay/", idsToPay);
+
+                    if (res.data.code == 20031) {
+                        const r = await axios.put("/users/" + this.id + "/" + idsToPay.length);
+
+                        if (r.data.code == 20031) {
+                            this.$message.success("支付成功");
+                        }
+                    } else {
+                        this.$message.error("支付失败");
+                    }
+                    this.dialogFormVisible4Pay = false;
+                    this.pagination.currentPage = 1;
+
+                    if (this.status == '1') {
+                        this.selectByPage();
+                    } else {
+                        this.getUserOrder();
+                    }
+                } catch (error) {
+                    console.log(error);
+                    this.$message.info("取消支付");
+                }
+
+
+            },
+
+            //获取派送订单的信息
+            handleDelivery(row) {
+                this.resetForm();
+                axios.get("/orders/" + row.orderId).then((res) => {
+                    this.dialogFormVisible4Del = true;
+                    this.formData = res.data.data;
+
+                })
+
+
+            },
+
+
+            //派送下单
+           async delivery() {
+               try {
+                   await this.$confirm("确定代取？", "提示", {
+                       type: 'info'
+                   });
+
+                   const res = await axios.put("/orders/" + this.formData.orderId);
+                   const resAddress =await axios.put("/orders",this.formData);
+
+                   if (res.data.code == 20031&&resAddress.data.code==20031) {
+
+
+                       this.$message.success("下单成功！");
+
+                   } else {
+                       this.$message.error("支付失败");
+                   }
+                   this.dialogFormVisible4Del = false;
+                   this.pagination.currentPage = 1;
+
+                   if (this.status == '1') {
+                       this.selectByPage();
+                   } else {
+                       this.getUserOrder();
+                   }
+               } catch (error) {
+                   console.log(error);
+                   this.$message.info("取消");
+               }
+
+           },
+
+
+            //删除
+            handleDelete(row) {
+                console.log(row);
+                this.$confirm("是否要删除？", "提示", {
+                    type: 'info'
+                }).then(() => {
+                    //    删除业务
+                    axios.delete("/orders/" + row.orderId).then((res) => {
+                        if (res.data.code == 20021) {
+                            this.$message.success("删除成功");
+                            this.pagination.currentPage = 1;
+
+                        }
+                        //    失败
+                        else {
+                            this.$message.error("删除失败,请联系管理员。");
+                        }
+                    }).finally(() => {
+
+                        this.selectByPage();
+                    })
+
+                }).catch(() => {
+
+                    this.$message.info("取消删除");
+                })
+
+            },
+
+            //获取待评价订单
+            handleRemark(row) {
+
+                this.dialogFormVisible4Rate = true;
+                this.orderId = row.orderId;
+
+            },
+
+            // 评价
+            async remark() {
+                try {
+                    await this.$confirm("确定？", "提示", {
+                        type: 'info'
+                    });
+
+                    const res = await axios.put("/delOrders/" + this.orderId + "/" + this.value);
+                    const resStatic=await axios.put("/delOrders/static/"+this.value);
+                    const resSum= await  axios.put("/delOrders/static");
+                    if (res.data.code == 20031&&resStatic.data.code==20031&&resSum.data.code==20031) {
+                        const r = await axios.put("/delOrders/remark/" + this.orderId);
+
+                        if (r.data.code == 20031) {
+
+                            this.$message.success("评价成功");
+                        }
+                    } else {
+                        this.$message.error("评价失败");
+                    }
+                    this.dialogFormVisible4Rate = false;
+                    this.pagination.currentPage = 1;
+
+                    if (this.status == '1') {
+                        this.selectByPage();
+                    } else {
+                        this.getUserOrder();
+                    }
+                } catch (error) {
+                    console.log(error);
+                    this.$message.info("取消");
+                }
+
+
+            },
+
+
+            //批量删除
+            handleSelectionDelete() {
+                const selectedRows = this.$refs.multipleTable.selection;
+                const idsToDelete = selectedRows.map(row => row.orderId);
+                console.log(idsToDelete);
+                console.log(typeof idsToDelete);
+
+                this.$confirm("是否要删除？", "提示", {
+                    type: 'info'
+                }).then(() => {
+                    //    删除业务
+                    axios.delete("/orders/", {data: idsToDelete}).then((res) => {
+                        if (res.data.code == 20021) {
+                            this.$message.success("删除成功");
+
+                        }
+                        //    失败
+                        else {
+                            this.$message.error("删除失败");
+                        }
+                    }).finally(() => {
+                        this.pagination.currentPage = 1;
+                        if (this.status == '1') {
+                            this.selectByPage();
+                        } else
+                            this.getUserOrder();
+
+                    })
+
+                }).catch(() => {
+
+                    this.$message.info("取消删除");
+                })
+
+
+            },
+
+
+            //页面大小
+            // handleSizeChange(val) {
+            //     this.pagination.pagesize = val;
+            //
+            // },
+
+            //当前页面设置
+            handleCurrentChange(val) {
+                this.pagination.currentPage = val;
+                if (this.status == '1')
+                    this.selectByPage();
+                else if (this.status == '0')
+                    this.getUserOrder();
+            },
+
+            //多选
+            handleSelectionChange(val) {
+                this.multipleSelection = val;
+                console.log(this.multipleSelection);
+
+                //计算总价
+                let sum = 0;
+                for (let i = 0; i < this.multipleSelection.length; i++) {
+                    if (this.multipleSelection[i].isPay == '0')
+                        sum += this.multipleSelection[i].price;
+                }
+                this.totalPrice = sum.toFixed(2);
+            },
+
+
+        },
+
+    })
+</script>
+</html>
+</html>

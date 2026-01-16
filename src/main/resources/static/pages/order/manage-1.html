@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="pragma" content="no-cache"/>
+    <meta http-equiv="content-type" content="no-cache, must-revalidate"/>
+    <meta http-equiv="expires" content="Wed, 26 Feb 1997 08:21:57 GMT"/>
+    <title>Title</title>
+<!--    <link rel="stylesheet" href="../../plugins/elementui/index.css">-->
+    <link rel="stylesheet" href="../../plugins/lib-master/theme-chalk/index.css">
+    <link rel="stylesheet" href="../../plugins/elementui/fonts/element-icons.woff">
+    <link rel="stylesheet" href="../../plugins/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body>
+<div id="app">
+
+
+    <div class="content-header">
+        <el-menu
+                :default-active="activeIndex2"
+                class="el-menu-demo"
+                mode="horizontal"
+                @select="handleSelect"
+                background-color="#545c64"
+                text-color="#fff"
+                active-text-color="#ffd04b">
+
+            <el-menu-item index="1"><a href="../user/index.html">首页</a></el-menu-item>
+            <el-menu-item index="2"><a href="http://localhost:8080/pages/order/manage-1.html">寄快递</a></el-menu-item>
+            <el-submenu index="3" :disabled="true">
+                <template slot="title">校园平台</template>
+                <el-menu-item index="3-1"><a href="#" style="color: white">平台中心</a></el-menu-item>
+                <el-menu-item index="3-2"><a href="#" style="color: white">注册平台</a></el-menu-item>
+                <el-menu-item index="3-3"><a href="#" style="color: white">平台管理</a></el-menu-item>
+            </el-submenu>
+            <el-menu-item index="4" v-if="!username" ><a href="login.html">登录</a></el-menu-item>
+            <el-submenu index="4" v-if="username" >
+                <template slot="title">{{username}}</template>
+                <el-menu-item index="4-1" v-if="username"><a href="../order/manage-2.html" style="color: white"><i
+                        class="el-icon-goods"></i> 我的快递</a></el-menu-item>
+                <el-submenu index="4-2" v-if="username" >
+                    <template slot="title"><i class="el-icon-s-order"></i> 订单派送</template>
+                    <el-menu-item index="4-2-1"><a href="http://localhost:8080/pages/order/manage-3.html"
+                                                   style="color: white"><i class="el-icon-s-home"></i> 派送中心</a></el-menu-item>
+                    <el-menu-item index="4-2-2"><a href="http://localhost:8080/pages/order/manage-4.html"
+                                                   style="color: white"><i class="el-icon-s-data"></i> 我的派送</a></el-menu-item></el-menu-item>
+
+                </el-submenu>
+                <el-menu-item index="4-3" v-if="username"><a href="../user/info.html" style="color: white"><i
+                        class="el-icon-info"></i> 个人中心</a></el-menu-item>
+                <el-menu-item index="4-4" v-if="username"><a href="http://localhost:8080/pages/order/index.html"
+                                                             style="color: white"><i class="el-icon-circle-close"></i> 退出登录</a>
+                </el-menu-item>
+                </el-menu-item>
+
+            </el-submenu>
+
+
+        </el-menu>
+    </div>
+<!--    <div style="margin-left: 90%">-->
+<!--        <el-row class="block-col-2">-->
+<!--            <el-col :span="12">-->
+<!--                <i class="el-icon-star-on" v-if="status=='1'"></i>-->
+<!--                <el-dropdown>-->
+<!--      <span class="el-dropdown-link">-->
+<!--        {{username}}<i class="el-icon-arrow-down el-icon&#45;&#45;right"></i>-->
+<!--      </span>-->
+<!--                    <el-dropdown-menu slot="dropdown">-->
+<!--                        <el-dropdown-item><i class="el-icon-info">-->
+<!--                        </i><a href="../user/info.html" style="margin-left: 10px;margin-bottom: 5px">个人中心</a>-->
+<!--                        </el-dropdown-item>-->
+
+<!--                        <el-dropdown-item v-if="status=='1'"><i class="el-icon-edit-outline">-->
+<!--                        </i> <a href="../user/admin.html" style="margin-left: 8px;">管理页面</a>-->
+<!--                        </el-dropdown-item>-->
+
+<!--                        <el-dropdown-item><i class="el-icon-circle-close">-->
+<!--                        </i> <a href="index.html" style="margin-left: 8px;">退出登陆</a>-->
+<!--                        </el-dropdown-item>-->
+
+
+<!--                    </el-dropdown-menu>-->
+<!--                </el-dropdown>-->
+<!--            </el-col>-->
+<!--        </el-row>-->
+<!--    </div>-->
+    <div class="app-container">
+        <div class="box" >
+            <el-container style="height: 800px; border: 1px solid #eee">
+<!--                <el-aside width="200px" style="background-color: rgb(238, 241, 246)">-->
+
+<!--                    <el-menu default-active="1-4-1" class="el-menu-vertical-demo" @open="handleOpen"-->
+<!--                             @close="handleClose"-->
+<!--                             >-->
+<!--                        <el-submenu index="1">-->
+<!--                            <template slot="title">-->
+<!--                                <span class="el-icon"></span>-->
+<!--                                <span slot="title">订单</span>-->
+<!--                            </template>-->
+<!--                            <el-menu-item-group>-->
+
+<!--                                <el-menu-item index="1-1"><a href="manage-2.html">我的订单</a></el-menu-item>-->
+<!--                                <el-menu-item index="1-2"><a href="manage-1.html">创建订单</a></el-menu-item>-->
+
+
+<!--                                <el-submenu index="1-3" v-if="this.role=='1'">-->
+<!--                                    <template slot="title">订单派送</template>-->
+<!--                                    <el-menu-item index="1-3-1"><a href="manage-3.html">派送中心</a></el-menu-item>-->
+<!--                                    <el-menu-item index="1-3-2"><a href="manage-4.html">已接订单</a></el-menu-item>-->
+<!--                                </el-submenu>-->
+
+<!--                                <el-submenu index="1-4" v-if="this.role=='0'" disabled>-->
+<!--                                    <template slot="title">订单派送</template>-->
+<!--                                    <el-menu-item index="1-4-1">派送中心</el-menu-item>-->
+<!--                                    <el-menu-item index="1-4-2">已接订单</el-menu-item>-->
+<!--                                </el-submenu>-->
+
+
+<!--                            </el-menu-item-group>-->
+
+<!--                        </el-submenu>-->
+
+<!--                        <el-menu-item index="2">-->
+<!--                            <i class="el-icon-back"><a href="../user/index.html" style="color: rgb(144, 147, 153)">|</a></i>-->
+<!--                            <span slot="title">首页 </span>-->
+<!--                        </el-menu-item>-->
+
+
+<!--                        <el-menu-item index="4">-->
+<!--                            <i class="el-icon-info"><a href="../user/info.html" style="color: rgb(144, 147, 153)"> |</a></i>-->
+<!--                            <span slot="title">个人中心</span>-->
+<!--                        </el-menu-item>-->
+
+<!--                    </el-menu>-->
+<!--                </el-aside>-->
+
+                <el-container>
+                    <!--                <el-header style="text-align: right; font-size: 12px">-->
+                    <!--                    <el-dropdown>-->
+                    <!--                        <i class="el-icon-setting" style="margin-right: 15px"></i>-->
+                    <!--                        <el-dropdown-menu slot="dropdown">-->
+                    <!--                            <el-dropdown-item>查看</el-dropdown-item>-->
+                    <!--                            <el-dropdown-item>新增</el-dropdown-item>-->
+                    <!--                            <el-dropdown-item>删除</el-dropdown-item>-->
+                    <!--                        </el-dropdown-menu>-->
+                    <!--                    </el-dropdown>-->
+                    <!--                    <span>王小虎</span>-->
+                    <!--                </el-header>-->
+
+                    <el-main style="background-color: white">
+                        <div style="background-color: white;padding: 50px">
+
+                            <el-form ref="form" :model="form" :inline="true" label-width="80px">
+                                <i class="el-icon-info"></i><span> 寄方信息</span><span
+                                    style="font: 11px Extra Small;color: rgb(153, 153, 153);"> 标*为必填项</span>
+                                <hr>
+
+
+                                <el-form-item label="* 姓名">
+                                    <el-input v-model="form.sendName"></el-input>
+                                </el-form-item>
+
+                                <el-form-item label="* 联系电话">
+                                    <el-input v-model="form.sendTel"></el-input>
+                                </el-form-item>
+                                <el-form-item label="* 地址">
+                                    <el-input v-model="form.sendAddress"></el-input>
+                                </el-form-item>
+
+                                <p></p>
+                                <i class="el-icon-info"></i><span> 收方信息</span> <span
+                                    style="font: 11px Extra Small;color: rgb(153, 153, 153);"> 标*为必填项</span>
+                                <hr>
+                                <el-form-item label="* 姓名">
+                                    <el-input v-model="form.recName"></el-input>
+                                </el-form-item>
+
+                                <el-form-item label="* 联系电话">
+                                    <el-input v-model="form.recTel"></el-input>
+                                </el-form-item>
+
+                                <el-form-item label="* 地址">
+                                    <el-input v-model="form.recAddress"></el-input>
+                                </el-form-item>
+
+                                <p></p>
+                                <i class="el-icon-info"></i><span> 物流信息</span> <span
+                                    style="font: 11px Extra Small;color: rgb(153, 153, 153);"> 标*为必填项</span>
+                                <hr>
+                                <el-form-item label="* 物流公司">
+                                    <el-select v-model="form.company" placeholder="请选物流公司">
+                                        <el-option label="智能" value="智能"></el-option>
+                                        <el-option label="圆通" value="圆通"></el-option>
+                                        <el-option label="申通" value="申通"></el-option>
+                                        <el-option label="顺丰 " value="顺丰"></el-option>
+                                        <el-option label="邮政" value="邮政"></el-option>
+                                        <el-option label="韵达" value="韵达"></el-option>
+                                        <el-option label="德邦" value="德邦"></el-option>
+
+                                    </el-select>
+                                </el-form-item>
+                                <el-form-item label="* 寄件时间">
+                                    <el-col :span="11">
+                                        <el-date-picker type="date" placeholder="选择日期" v-model="form.sendDay"
+                                                        style="width: 100%;"></el-date-picker>
+                                    </el-col>
+                                    <el-col class="line" :span="2">-</el-col>
+                                    <el-col :span="11">
+                                        <el-time-picker placeholder="选择时间" v-model="form.sendTime"
+                                                        style="width: 100%;"></el-time-picker>
+                                    </el-col>
+                                </el-form-item>
+                                <!--                    <el-form-item label="急配送" >-->
+                                <!--                        <el-switch v-model="form.status" value=1></el-switch>-->
+                                <!--                    </el-form-item>-->
+                                <el-form-item label="* 物品信息">
+                                    <el-checkbox-group v-model="T.typeB">
+                                        <el-checkbox label="日用产品" value="common"></el-checkbox>
+                                        <el-checkbox label="电子设备" value="electric"></el-checkbox>
+                                        <el-checkbox label="大件" value="giant"></el-checkbox>
+                                        <el-checkbox label="易碎物品" value="delicate"></el-checkbox>
+
+                                    </el-checkbox-group>
+                                </el-form-item>
+
+                                <p></p>
+                                <el-form-item label="* 寄件形式">
+                                    <el-radio-group v-model="form.remark">
+                                        <el-radio label="上门取件"></el-radio>
+                                        <el-radio label="服务点自寄"></el-radio>
+                                    </el-radio-group>
+                                </el-form-item>
+
+                                <el-form-item label="* 重量">
+                                    <el-input v-model="form.kilo" placeholder="千斤/kg"></el-input>
+                                </el-form-item>
+
+                                <p></p>
+                                <el-form-item label="备注:">
+                                    <el-input type="text" v-model="form.message" placeholder="详细物品信息/物流要求"></el-input>
+                                </el-form-item>
+                                <p></p>
+                                <el-form-item>
+                                    <el-button type="primary" @click="onSubmit" id="sub" icon="el-icon-check">创建
+                                    </el-button>
+                                    <el-button icon="el-icon-error" @click="back()">取消</el-button>
+                                </el-form-item>
+                            </el-form>
+
+                        </div>
+
+                    </el-main>
+
+                </el-container>
+
+            </el-container>
+        </div>
+    </div>
+
+</div>
+
+</body>
+
+<style>
+    .el-menu-vertical-demo:not(.el-menu--collapse) {
+        width: 200px;
+        min-height: 400px;
+    }
+
+    .el-dropdown-link {
+        cursor: pointer;
+        color: #409EFF;
+    }
+
+    .el-icon-arrow-down {
+        font-size: 12px;
+    }
+
+    .demonstration {
+        display: block;
+        color: #8492a6;
+        font-size: 14px;
+        margin-bottom: 20px;
+    }
+
+
+</style>
+
+<script src="../../js/vue.js"></script>
+<script src="../../js/axios-0.18.0.js"></script>
+<!--<script src="../../plugins/elementui/index.js"></script>-->
+<script src="../../plugins/lib-master/index.js" charset="UTF-8"></script>
+<script type="text/javascript" src="../../js/jquery.min.js"></script>
+
+
+<script>
+
+
+    var vue = new Vue({
+
+        el: '#app',
+
+
+        data: {
+
+
+            username: '',
+            status: '0',
+            id: '0',
+            T: {
+
+                typeB: [],
+            },
+
+            form: {
+                orderId: '',
+                userId: '',
+                sendName: '',
+                sendTel: '',
+                sendAddress: '',
+                company: '',
+                price: '',
+                kilo: '',
+                sendDay: '',
+                sendTime: '',
+                type: '',
+                recName: '',
+                recTel: '',
+                recAddress: '',
+                remark: '',
+                message: '',
+
+
+            },
+            isCollapse: true,
+
+        },
+
+
+        mounted() {
+            this.getCode();
+            this.getUser();
+
+        },
+
+
+        methods: {
+
+
+            onSubmit() {
+                var _this = this;
+                _this.form.type = _this.T.typeB.toString();
+
+                //计算费用
+                this.getPrice();
+
+                console.log(_this.form);
+
+                axios({
+                    url: "http://localhost:8080/orders",
+                    method: "post",
+                    async: false,
+                    data: _this.form
+                }).then((res => {
+                    if (res.data.data) {
+                        this.$alert('订单已创建', '创建成功！');
+                        this.orderCountAdd();
+                        this.resetForm();
+                        this.getCode();
+
+                    } else {
+                        this.$alert('请联系管理员！', '创建失败！');
+                        this.resetForm();
+                    }
+
+                }))
+            },
+
+
+            orderCountAdd(){
+                const now = new Date();
+
+// 获取当前月份
+                const month = now.getMonth() + 1;
+
+// 打印月份
+                console.log(month);
+
+                axios.put("/orders/static/"+month).then(res=>{
+                    if(res.data.code==20031){
+                        console.log("ok");
+                    }else{
+                        console.log("error");
+                    }
+
+                })
+
+            },
+
+            handleOpen(key, keyPath) {
+                console.log(key, keyPath);
+            },
+            handleClose(key, keyPath) {
+                console.log(key, keyPath);
+            },
+
+            getCode() {
+                var _this = this;
+                axios({
+                    url: "http://localhost:8080/orders",
+                    method: "get",
+                    async: false,
+                }).then(function (response) {
+                    _this.form.orderId = response.data;
+                    _this.form.userId = _this.id;
+                });
+
+            },
+
+            getUser() {
+
+                this.username = sessionStorage.getItem("username");
+                this.status = sessionStorage.getItem("status");
+                this.id = sessionStorage.getItem("id");
+
+
+            },
+
+            resetForm() {
+
+                this.form = {};
+            },
+
+            //计算订单基础费用
+            getPrice() {
+                let price = 0;
+                if (this.form.company == "顺丰" || this.form.company == "德邦") {
+                    price += 1;
+                    // console.log(price);
+                } else price += 0.5;
+                // console.log(price);
+                for (let i = 0; i < this.T.typeB.length; i++) {
+                    if (this.T.typeB[i] == '大件')
+                        price += 2;
+                }
+                // console.log(price);
+                // console.log(typeof price);
+                if (this.form.kilo < 1)
+                    this.form.kilo = parseFloat(this.form.kilo) * 10;
+                else this.form.kilo = (parseInt(this.form.kilo) - 1) * 2;
+
+                // console.log(typeof this.form.kilo);
+                // console.log((parseFloat(this.kilo) * 5));
+                price += this.form.kilo;
+                console.log(price);
+                this.form.price = price;
+                // console.log(this.price);
+
+            },
+
+            back() {
+
+                console.log(this.form);
+
+            },
+
+
+        }
+    })
+
+
+</script>
+
+</html>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kersey.mapper.DelOrderMapper">
+
+<!--    返回映射集-->
+    <resultMap id="orderMap" type="com.kersey.pojo.Order">
+        <result column="id" property="orderId"></result>
+        <result column="userId" property="userId"></result>
+        <result column="currierId" property="currierId"></result>
+        <result column="company" property="company"></result>
+        <result column="sendAddress" property="sendAddress"></result>
+        <result column="recName" property="recName"></result>
+        <result column="recTel" property="recTel"></result>
+        <result column="recAddress" property="recAddress"></result>
+        <result column="remark" property="remark"></result>
+        <result column="status" property="status"></result>
+        <result column="hasDelete" property="hasDelete"></result>
+        <result column="deleteReason" property="deleteReason"></result>
+        <result column="createTime" property="createTime"></result>
+
+    </resultMap>
+    <insert id="orderAndCurrier">
+
+    insert into currier_order values(#{currierId},#{delOrder.orderId},#{delOrder.userId});
+
+    </insert>
+    <update id="orderReceive">
+    update order_info set isReceived=1 where id=#{orderId};
+
+    </update>
+    <update id="orderFinish">
+    update order_info set isFinish=1 where id=#{orderId};
+
+    </update>
+    <update id="orderRemark">
+        update tb_user set orderSum=orderSum+1,totalStars=(totalStars+#{value}),stars=totalStars/orderSum where id=
+        (select currierId FROM currier_order where orderId=#{orderId} limit 1)
+
+    </update>
+    <update id="staticAdd">
+        update star_static_1 set count=count+1 where id=#{value}
+    </update>
+
+    <select id="selectByPage" resultMap="orderMap">
+
+        SELECT * from order_info as OI LEFT JOIN user_order as OU on OI.id=OU.orderId where isPay=1 and status=1 and OU.orderId not in(
+            select orderId from currier_order GROUP by orderId) limit #{begin},#{size};
+    </select>
+
+    <select id="myOrder" resultMap="orderMap">
+        SELECT * from order_info as OI LEFT JOIN user_order as OU on OI.id=OU.orderId where OU.orderId in(
+            select orderId from currier_order where currierId=#{currierId} GROUP by orderId) limit #{begin},#{size};
+
+    </select>
+    <select id="searchAllNotReceived" resultMap="orderMap">
+        SELECT * from order_info as OI
+                          LEFT JOIN user_order as OU on OI.id=OU.orderId
+        where isPay=1 and status=1
+            and OU.orderId not in(select orderId from currier_order GROUP by orderId)
+            AND OI.recName = #{condition} or OI.recTel like concat('%', #{condition}) or OI.id=#{condition}
+
+
+    </select>
+    <select id="searchAllNotReceivedOfCount" resultType="java.lang.Integer">
+        SELECT count(*) from order_info as OI
+                          LEFT JOIN user_order as OU on OI.id=OU.orderId
+        where isPay=1 and status=1
+            and OU.orderId not in(select orderId from currier_order GROUP by orderId)
+            AND OI.recName = #{condition} or OI.recTel like concat('%', #{condition}) or OI.id=#{condition}
+
+
+    </select>
+    <select id="searchAllReceived" resultMap="orderMap">
+        SELECT * from order_info as OI LEFT JOIN user_order as OU on OI.id=OU.orderId where OU.orderId in(
+            select orderId from currier_order where currierId=#{currierId} GROUP by orderId)
+            AND OI.recName = #{condition} or OI.recTel like concat('%', #{condition}) or OI.id=#{condition};
+
+    </select>
+    <select id="searchAllReceivedOfCount" resultType="java.lang.Integer">
+
+        SELECT count(*) from order_info as OI LEFT JOIN user_order as OU on OI.id=OU.orderId where OU.orderId in(
+            select orderId from currier_order where currierId=#{currierId} GROUP by orderId)
+            AND OI.recName = #{condition} or OI.recTel like concat('%', #{condition}) or OI.id=#{condition};
+    </select>
+
+
+</mapper>
