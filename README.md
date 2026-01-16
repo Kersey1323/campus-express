@@ -112,7 +112,7 @@ shcool-express/
 ```yaml
 数据库名: shcool_express
 用户名: root
-密码: kerseytay13
+密码: root
 端口: 3306
 ```
 
